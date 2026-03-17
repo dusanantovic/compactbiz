@@ -6,7 +6,8 @@ export const AsideControllerWrapper = styled("div")({
     position: "relative",
     height: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
     display: "flex",
-    flexShrink: 0
+    flexShrink: 0,
+    marginLeft: "16px"
 });
 
 export const AsideControllerToggle = styled(IconButton)(({ theme }) => ({

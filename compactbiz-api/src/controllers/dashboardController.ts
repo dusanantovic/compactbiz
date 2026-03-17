@@ -1,4 +1,4 @@
-import { Role, OrderStatus, PackageAdjustmentType } from "../../models/enums";
+import { Role, OrderStatus, PackageAdjustmentType, OrderType } from "../../models/enums";
 import { assert } from "../../models/src/util";
 import { Authorized, Controller, Get } from "routing-controllers";
 import { BaseController } from "./baseController";
@@ -42,11 +42,11 @@ export class DashboardController extends BaseController {
         ]);
 
         const sellRevenue = orderStats
-            .filter((r: any) => r.type === "Sell" && r.status === OrderStatus.Complete)
+            .filter((r: any) => r.type === OrderType.Sell && r.status === OrderStatus.Complete)
             .reduce((sum: number, r: any) => sum + parseFloat(r.total || "0"), 0);
 
         const purchaseCost = orderStats
-            .filter((r: any) => r.type === "Purchase" && r.status === OrderStatus.Complete)
+            .filter((r: any) => r.type === OrderType.Purchase && r.status === OrderStatus.Complete)
             .reduce((sum: number, r: any) => sum + parseFloat(r.total || "0"), 0);
 
         return {
