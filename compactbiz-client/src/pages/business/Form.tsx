@@ -10,7 +10,7 @@ const a = typed(Address, "address");
 const BusinessForm = ({ ...props }) => {
     const translate = useTranslate();
     return (
-        <TabbedForm {...props}>
+        <TabbedForm {...props} defaultValues={{ address: {} }}>
             <TabbedForm.Tab label={translate(`resources.misc.data`, { smart_count: 1, })}>
                 <TextInput source={b(x => x.name)} label={translate(`resources.misc.name`, { smart_count: 1, })} />
                 <TextInput source={a(x => x.country)} label={translate(`resources.misc.country`)} />

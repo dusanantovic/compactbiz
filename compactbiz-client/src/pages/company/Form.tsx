@@ -20,7 +20,7 @@ const CompanyForm = ({ ...props }) => {
     const location = useLocation();
     const isEdit = location.pathname !== "/companies/create";
     return (
-        <TabbedForm {...props} toolbar={isEdit ? <CompanyEditToolbar /> : undefined}>
+        <TabbedForm {...props} toolbar={isEdit ? <CompanyEditToolbar /> : undefined} defaultValues={{ address: {} }}>
             <TabbedForm.Tab label={translate(`resources.misc.data`, { smart_count: 1, })}>
                 <TextInput source={c(x => x.name)} label={translate(`resources.misc.name`, { smart_count: 1, })} />
                 <TextInput source={c(x => x.email)} />
