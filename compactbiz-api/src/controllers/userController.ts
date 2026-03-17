@@ -64,17 +64,11 @@ export class UserController extends BaseController {
             assert(!userByEmail, [`User with email (${userBody.email}) already exist`]);
             const newStaff = User.createStaff(company.id, userBody);
             const savedUser = await userRepo.save(newStaff);
-            const facility = await facilityRepo.findOne({
-                where: {
-                    companyId: company.id,
-                    id: facilityId
-                }
-            });
-            assert(facility, ["Facility doesn't exist"]);
-            facility.staff = [savedUser];
-            await facilityRepo.save(facility);
+            await facilityRepo.addStaffMember(company.id, facilityId, savedUser.id);
+
             return savedUser;
         });
+
         return savedUser;
     }
 

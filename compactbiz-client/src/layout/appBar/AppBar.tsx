@@ -6,7 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { AppBarContainer, AppBarLeft, AppBarCenter, AppBarRight, AppBarTextContent, AppBarIconButton } from "./styledComponents";
 import { UserMenu } from "./components";
 import { Menu as MenuIcon } from "@mui/icons-material";
-import { Theme, useMediaQuery } from "@mui/material";
+import { Box, Theme, useMediaQuery } from "@mui/material";
 import { useOpenAside } from "src/hooks/useOpenAside";
 
 export const appBarHeight = 60;
@@ -59,7 +59,11 @@ export const BizAppBar = () => {
                         <SearchIcon />
                     </AppBarIconButton>
                 )}
-                {largerThenSmall && <LocalesMenuButton />}
+                {largerThenSmall && (
+                    <Box sx={{ "& button": { color: "rgba(255,255,255,0.82)" } }}>
+                        <LocalesMenuButton />
+                    </Box>
+                )}
                 <AppBarIconButton onClick={() => refresh()}>
                     <NavigationRefreshIcon />
                 </AppBarIconButton>

@@ -35,6 +35,13 @@ export class FacilityRepository extends BaseRepository<Facility> {
         return qb;
     }
 
+    public async addStaffMember(companyId: number, facilityId: number, userId: number): Promise<void> {
+        await this.manager.query(
+            `INSERT INTO compactbiz.facility_staff ("companyId", "facilityId", "userId") VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+            [companyId, facilityId, userId]
+        );
+    }
+
     private search(qb: SelectQueryBuilder<Facility>, value: string): SelectQueryBuilder<Facility> {
         const brackets = new Brackets(ex => {
             const likeName = this.getWhereLike(qb.alias, "name", value);

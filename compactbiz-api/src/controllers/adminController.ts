@@ -58,13 +58,7 @@ export class AdminController extends BaseController {
             newUser.employeedById = companyId;
             newUser.verified = true;
             const savedUser = await txUserRepo.save(newUser);
-            const facility = await facilityRepo.findOne({
-                where: { companyId, id: facilityId },
-                relations: ["staff"]
-            });
-            assert(facility, ["Facility doesn't exist"]);
-            facility.staff.push(savedUser);
-            await facilityRepo.save(facility);
+            await facilityRepo.addStaffMember(companyId, facilityId, savedUser.id);
 
             return savedUser;
         });

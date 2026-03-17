@@ -37,8 +37,8 @@ const excludedRoles = new Set<Role>([Role.Guest, Role.Admin]);
 const AdminUserForm = ({ ...props }) => {
     const translate = useTranslate();
 
-    const roleChoices = getEnumEntries(Role)
-        .filter(({ id }) => !excludedRoles.has(id as Role))
+    const roleChoices = getEnumEntries(Role as any)
+        .filter(({ id }) => !excludedRoles.has(id as any))
         .map(({ id, name }) => ({
             id,
             name: translate(`resources.misc.${(name as string).replace(/^(.)/, c => c.toLowerCase()).replace(" ", "")}`),
