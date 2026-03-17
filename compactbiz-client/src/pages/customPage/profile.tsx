@@ -1,17 +1,17 @@
 import * as React from "react";
 import { SimpleForm, TextInput, Title, useGetOne, useTranslate, useUpdate } from "react-admin";
-import { CardContent } from "@mui/material";
+import { Card, CardContent } from "@mui/material";
 import { typed } from "src/util";
 import { User } from "models";
 
 export const ProfilePage = () => {
     return (
-        <div>
+        <Card>
             <Title title="Profile" />
             <CardContent>
                 <UserForm/>
             </CardContent>
-        </div>
+        </Card>
     );
 };
 ProfilePage.path = "/profile";
