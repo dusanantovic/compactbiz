@@ -1,15 +1,16 @@
-import { MiniFacility, User } from "../../models";
+import { Facility, MiniFacility, User } from "../../models";
 import { assert, throwError, trimAndLowerCase } from "../../models/src/util";
 import { Role } from "../../models/enums";
-import { ChangePasswordBody, VerifyBody, LoginBody, LoginResponse, RefreshBody, TokenResponse } from "../../models/interfaces";
+import { ChangePasswordBody, VerifyBody, StaffVerifyBody, LoginBody, LoginResponse, RefreshBody, TokenResponse } from "../../models/interfaces";
 import { CryptoGenerator } from "../../models/src/cryptoGenerator";
 import { InvalidCredentials, MissingCredentials, SendTempPinBody, TemporaryPinExpired, Unverified } from "../../models/src/user";
 import { Get, Controller, Post, Body, Param, Res, Put, Authorized, ForbiddenError } from "routing-controllers";
 import { Response } from "express";
 import { BaseController } from "./baseController";
-import { UserRepository } from "../repositories";
+import { FacilityRepository, UserRepository } from "../repositories";
 import { AppCtx, Context } from "../../context";
 import { UserService } from "../services";
+import { IsNull, Not } from "typeorm";
 
 @Controller()
 export class UserController extends BaseController {
@@ -23,19 +24,57 @@ export class UserController extends BaseController {
 
     @Post("/users")
     public async createUser(@Body() userBody: Partial<User>): Promise<User> {
-        const email = trimAndLowerCase(userBody.email);
-        if (email) {
-            const userByEmail = await this.userRepo.findOne({
+        const savedUser = await this.connection.transaction(async manager => {
+            const userRepo = this.getRepositoryProvider(manager).getCustomRepository(User, UserRepository);
+            const email = trimAndLowerCase(userBody.email);
+            if (email) {
+                const userByEmail = await userRepo.findOne({
+                    where: {
+                        email
+                    }
+                });
+                assert(!userByEmail, [`User with email (${userBody.email}) already exist`]);
+            }
+            const newUser = User.create(userBody);
+            const savedUser = await userRepo.save(newUser);
+            const userService = new UserService(manager);
+            await userService.sendTempPin(savedUser);
+            return savedUser;
+        });
+        return savedUser;
+    }
+
+    @Post("/users/staff")
+    @Authorized([Role.Manager, Role.Owner])
+    public async createStaff(@Body() userBody: Partial<User>, @AppCtx() context: Context): Promise<User> {
+        const { company, facilityId, user } = context.state;
+        assert(company, ["Missing company"]);
+        assert(facilityId, ["Missing facility"]);
+        assert(user, ["Missing user"]);
+        const savedUser = await this.connection.transaction(async manager => {
+            const facilityRepo = this.getRepositoryProvider(manager).getCustomRepository(Facility, FacilityRepository);
+            const userRepo = this.getRepositoryProvider(manager).getCustomRepository(User, UserRepository);
+            const email = trimAndLowerCase(userBody.email);
+            assert(email, ["Email is required"]);
+            const userByEmail = await userRepo.findOne({
                 where: {
                     email
                 }
             });
             assert(!userByEmail, [`User with email (${userBody.email}) already exist`]);
-        }
-        const newUser = User.create(userBody);
-        const savedUser = await this.userRepo.save(newUser);
-        const userService = new UserService(this.connection.manager);
-        await userService.sendTempPin(savedUser);
+            const newStaff = User.createStaff(company.id, userBody);
+            const savedUser = await userRepo.save(newStaff);
+            const facility = await facilityRepo.findOne({
+                where: {
+                    companyId: company.id,
+                    id: facilityId
+                }
+            });
+            assert(facility, ["Facility doesn't exist"]);
+            facility.staff = [savedUser];
+            await facilityRepo.save(facility);
+            return savedUser;
+        });
         return savedUser;
     }
 
@@ -108,6 +147,29 @@ export class UserController extends BaseController {
             userDb.tempPinExpirationDate = result.tempPinExpirationDate;
         }
         await userService.sendTempPin(userDb);
+        return true;
+    }
+
+    @Put("/users/staff/verify")
+    public async verifyStaff(@Body() verifyBody: StaffVerifyBody): Promise<boolean> {
+        const email = trimAndLowerCase(verifyBody && verifyBody.email);
+        assert(email, ["Please enter your email"]);
+        assert(verifyBody.password, ["Password is required"]);
+        const userDb = await this.userRepo.findOne({
+            where: {
+                email,
+                employeedById: Not(IsNull())
+            }
+        });
+        assert(userDb, [`User doesn't exist`]);
+        const result = await this.userRepo.getUserSpecFields(userDb.key, "tempPin", "tempPinExpirationDate");
+        if (!result) {
+            throw new MissingCredentials();
+        }
+        userDb.tempPin = result.tempPin;
+        userDb.tempPinExpirationDate = result.tempPinExpirationDate;
+        userDb.verify(verifyBody.tempPin, verifyBody.password);
+        await this.userRepo.save(userDb);
         return true;
     }
 

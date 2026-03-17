@@ -1,4 +1,4 @@
-import { AfterInsert, AfterLoad, AfterUpdate, Column, Entity, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AfterInsert, AfterLoad, AfterUpdate, Check, Column, Entity, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Type } from "class-transformer";
 import { IsEmail, IsNotEmpty } from "class-validator";
 import { BadRequestError, ForbiddenError, UnauthorizedError } from "routing-controllers";
@@ -13,6 +13,7 @@ import { Location } from "./location";
 import { MiniFacility } from ".";
 
 @Entity()
+@Check("user_password_required_unless_staff", `"password" IS NOT NULL OR ("employeedById" IS NOT NULL AND verified = false)`)
 export class User extends BaseModel<UserKey> implements UserKey {
 
     constructor() {
@@ -41,7 +42,7 @@ export class User extends BaseModel<UserKey> implements UserKey {
     @IsNotEmpty({ message: "Last name is required" })
     lastName: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     @IsNotEmpty({ message: "Password is required" })
     password: string;
 
@@ -120,7 +121,19 @@ export class User extends BaseModel<UserKey> implements UserKey {
         validator(user);
         // Exclamation mark is present because of validator ensure that password exist
         const cryptoGenerator = new CryptoGenerator();
-        user.password = cryptoGenerator.hash(user.password!); // TO DO: Fix for staff
+        user.password = cryptoGenerator.hash(user.password!);
+        return user;
+    }
+
+    public static createStaff(employeedById: number, userBody: Partial<User>): User {
+        const user = new User();
+        user.employeedById = employeedById;
+        user.email = trimAndLowerCase(userBody.email) as any;
+        user.setPhone(userBody.phone);
+        user.firstName = userBody.firstName || null as any;
+        user.lastName = userBody.lastName || null as any;
+        user.role = userBody.role || null as any;
+        validator(user, ["password"]);
         return user;
     }
 
@@ -134,7 +147,7 @@ export class User extends BaseModel<UserKey> implements UserKey {
         validator(this, ["email", "password"]);
     }
 
-    public verify(tempPin: string): void {
+    public verify(tempPin: string, password?: string): void {
         if (!this.verified) {
             if (!tempPin) {
                 throw new MissingCredentials();
@@ -146,6 +159,9 @@ export class User extends BaseModel<UserKey> implements UserKey {
             const isValidTempPin = cryptoGenerator.compareRawWithHash(tempPin, this.tempPin);
             if (!isValidTempPin) {
                 throw new InvalidCredentials();
+            }
+            if (this.employeedById && password) {
+                this.password = cryptoGenerator.hash(password);
             }
             this.verified = true;
             this.tempPin = null as any;
@@ -229,6 +245,12 @@ export interface UserKey {
 export interface VerifyBody {
     email: string;
     tempPin: string;
+}
+
+export interface StaffVerifyBody {
+    email: string;
+    tempPin: string;
+    password: string;
 }
 
 export interface ChangePasswordBody {

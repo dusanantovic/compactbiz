@@ -62,7 +62,7 @@ export const ForgotPassStep = ({ email, handleStep, changeEmail }: ForgotPassPro
             setTempPinIsSent(true);
         } catch (err: any) {
             notify(errorMessageParser(err.message), { type: "error" });
-            if (err.name === new TemporaryPinHasAlreadySent().name) {
+            if (err.body?.name === new TemporaryPinHasAlreadySent().name) {
                 setTempPinIsSent(true);
             }
         }

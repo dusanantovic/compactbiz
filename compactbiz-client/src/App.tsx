@@ -65,7 +65,7 @@ const App = () => {
                             options={{
                                 key: 1,
                                 label: "Staff",
-                                visible: permissions !== Role.Warehouseman && permissions !== Role.Sales && permissions !== Role.Driver
+                                visible: permissions && [Role.Manager, Role.Owner, Role.Admin].includes(permissions)
                             }}
                         />
                         <Resource
@@ -76,9 +76,7 @@ const App = () => {
                             options={{
                                 key: 2,
                                 label: "Products",
-                                visible: permissions !== Role.Warehouseman && permissions !== Role.Sales && permissions !== Role.Driver,
-                                nested: "Inventory",
-                                nestedKey: 1
+                                visible: permissions !== Role.Warehouseman && permissions !== Role.Sales && permissions !== Role.Driver
                             }}
                         />
                         <Resource

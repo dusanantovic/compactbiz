@@ -15,7 +15,8 @@ const withoutUserList: RouteList[] = [
     { path: "/api/users/refresh", method: "POST" },
     { path: "/api/users/sendtemppin", method: "POST" },
     { path: "/api/users/changepassword", method: "POST" },
-    { path: "/api/users/verify", method: "PUT" }
+    { path: "/api/users/verify", method: "PUT" },
+    { path: "/api/users/staff/verify", method: "PUT" },
 ];
 
 const withoutCompanyList: RouteList[] = [

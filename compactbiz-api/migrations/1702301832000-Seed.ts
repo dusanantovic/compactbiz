@@ -33,6 +33,10 @@ export class Seed1702301832000 implements MigrationInterface {
             VALUES (1, 1, 1, 'Default Room', 'Room', true)
             ON CONFLICT DO NOTHING
         `);
+        await queryRunner.query(`SELECT setval(pg_get_serial_sequence('compactbiz.company', 'id'), MAX(id)) FROM compactbiz.company`);
+        await queryRunner.query(`SELECT setval(pg_get_serial_sequence('compactbiz."user"', 'id'), MAX(id)) FROM compactbiz."user"`);
+        await queryRunner.query(`SELECT setval(pg_get_serial_sequence('compactbiz.facility', 'id'), MAX(id)) FROM compactbiz.facility`);
+        await queryRunner.query(`SELECT setval(pg_get_serial_sequence('compactbiz.location', 'id'), MAX(id)) FROM compactbiz.location`);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

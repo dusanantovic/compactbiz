@@ -1,5 +1,5 @@
 import { NonAuthorizedError } from "../models";
-import { ChangePasswordBody, LoginResponse, RefreshBody, SendTempPinBody, VerifyBody } from "../models/interfaces";
+import { ChangePasswordBody, LoginResponse, RefreshBody, SendTempPinBody, StaffVerifyBody, VerifyBody } from "../models/interfaces";
 import { config } from "./config";
 import { clearCredentials, initCache } from "./cache";
 import { http } from "./http";
@@ -54,6 +54,19 @@ export const verify = async (email: string, tempPin: string) => {
         tempPin
     };
     await http(`${config.apiUrl}/users/verify`, {
+        method: "PUT",
+        body: JSON.stringify(body)
+    });
+    return true;
+};
+
+export const verifyStaff = async (email: string, tempPin: string, password: string) => {
+    const body: StaffVerifyBody = {
+        email,
+        tempPin,
+        password
+    };
+    await http(`${config.apiUrl}/users/staff/verify`, {
         method: "PUT",
         body: JSON.stringify(body)
     });

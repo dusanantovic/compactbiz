@@ -1,4 +1,4 @@
-import { Unverified } from "../../../../models";
+import { TemporaryPinHasAlreadySent, Unverified } from "../../../../models";
 import * as React from "react";
 import { useLogin, useNotify } from "react-admin";
 import { LoginTextField, LoginSmallTitle, LoginTitle, LoginTextFieldWithTop, SubmitButton, BottomTextWrapper, BottomTextLeft } from "../styledComponents";
@@ -30,11 +30,21 @@ export const LoginStep = ({ email, handleStep, changeEmail }: LoginStepProps) =>
         setLoader(true);
         try {
             await login({ email, password });
-        } catch (err: any) {
-            notify(errorMessageParser(err.message), { type: "error" });
-            if (err.message === "Unverified user") {
-                await sendTempPin(email);
-                handleStep(LoginStepType.Verify);
+        } catch (err1: any) {
+            notify(errorMessageParser(err1.message), { type: "error" });
+            if (err1.body?.name === new Unverified().name) {
+                let goToVerify = true;
+                try {
+                    await sendTempPin(email);
+                } catch (err2: any) {
+                    if (err2.body?.name !== new TemporaryPinHasAlreadySent().name) {
+                        notify(errorMessageParser(err2.message), { type: "error" });
+                        goToVerify = false;
+                    }
+                }
+                if (goToVerify) {
+                    handleStep(LoginStepType.Verify);
+                }
             }
         }
         setLoader(false);

@@ -1,5 +1,5 @@
 export type { CompanyKey } from "../src/company";
-export type { UserKey, VerifyBody, ChangePasswordBody, LoginBody, RefreshBody, LoginResponse, TokenResponse, SendTempPinBody } from "../src/user";
+export type { UserKey, VerifyBody, StaffVerifyBody, ChangePasswordBody, LoginBody, RefreshBody, LoginResponse, TokenResponse, SendTempPinBody } from "../src/user";
 export type { IdTokenData, AccessTokenData, RefreshTokenData } from "../src/tokenGenerator";
 export type { FacilityKey } from "../src/facility";
 export type { CategoryKey } from "../src/category";
