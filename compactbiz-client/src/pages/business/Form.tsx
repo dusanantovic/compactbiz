@@ -1,16 +1,65 @@
-import { Business } from "../../../models";
+import { Business, Order } from "../../../models";
 import { Address } from "../../../models/src/address";
 import * as React from "react";
-import { Create, Edit, TabbedForm, TextInput, NumberInput, useTranslate } from "react-admin";
+import { Create, Datagrid, Edit, ListContextProvider, NumberInput, Pagination, TabbedForm, TextField, TextInput, useGetList, useList, useRecordContext, useTranslate } from "react-admin";
 import { typed } from "../../util";
 
 const b = typed(Business);
 const a = typed(Address, "address");
 
-const BusinessForm = ({ ...props }) => {
+const BusinessOrdersTab = () => {
+    const record = useRecordContext<Business>();
+    const translate = useTranslate();
+    const [page, setPage] = React.useState(1);
+    const perPage = 10;
+
+    // Business identity = "companyId-id", extract the numeric business id
+    const businessId = record?.id
+        ? parseInt(record.id.toString().split('-').pop()!)
+        : undefined;
+
+    const { data = [], total = 0, isPending, isFetching } = useGetList<Order>(
+        'orders',
+        {
+            pagination: { page, perPage },
+            sort: { field: 'id', order: 'DESC' },
+            filter: { businessId },
+        },
+        { enabled: !!businessId }
+    );
+
+    const listContext = useList({ data, isPending, isFetching });
+
+    const contextValue = {
+        ...listContext,
+        page,
+        perPage,
+        total,
+        setPage: (p: number) => setPage(p),
+        totalPages: Math.ceil((total || 0) / perPage),
+        hasNextPage: page * perPage < (total || 0),
+        hasPreviousPage: page > 1,
+        resource: 'orders',
+    };
+
+    return (
+        <ListContextProvider value={contextValue as any}>
+            <Datagrid bulkActionButtons={false}>
+                <TextField source="id" label="#ID" />
+                <TextField source="type" label={translate('resources.orders.type', { smart_count: 1 })} />
+                <TextField source="total" label={translate('resources.orders.total', { smart_count: 1 })} />
+                <TextField source="status" label={translate('resources.orders.status', { smart_count: 1 })} />
+            </Datagrid>
+            <Pagination rowsPerPageOptions={[10]} />
+        </ListContextProvider>
+    );
+};
+
+const BusinessForm = (props: any) => {
+    const { showOrders = false, ...rest } = props;
     const translate = useTranslate();
     return (
-        <TabbedForm {...props} defaultValues={{ address: {} }}>
+        <TabbedForm {...rest} defaultValues={{ address: {} }}>
             <TabbedForm.Tab label={translate(`resources.misc.data`, { smart_count: 1, })}>
                 <TextInput source={b(x => x.name)} label={translate(`resources.misc.name`, { smart_count: 1, })} />
                 <TextInput source={a(x => x.country)} label={translate(`resources.misc.country`)} />
@@ -19,6 +68,11 @@ const BusinessForm = ({ ...props }) => {
                 <TextInput source={a(x => x.streetNumber)} label={translate(`resources.misc.streetNumber`)} />
                 <NumberInput source={a(x => x.zip)} label={translate(`resources.misc.zip`)} />
             </TabbedForm.Tab>
+            {showOrders && (
+                <TabbedForm.Tab label={translate('resources.orders.name', { smart_count: 2 })}>
+                    <BusinessOrdersTab />
+                </TabbedForm.Tab>
+            )}
         </TabbedForm>
     );
 };
@@ -31,6 +85,6 @@ export const BusinessCreate = () => (
 
 export const BusinessEdit = () => (
     <Edit>
-        <BusinessForm />
+        <BusinessForm showOrders />
     </Edit>
 );
