@@ -1,0 +1,24 @@
+{
+    "editor.formatOnType": true,
+    "editor.formatOnPaste": true,
+    "editor.insertSpaces": true,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.letterSpacing": 0,
+    "editor.tabSize": 4,
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "files.exclude": {
+        "**/.git": true,
+        "**/node_modules/*": true
+    },
+    "search.exclude": {
+        "**/dist/*": true,
+        "**/node_modules": true,
+        "package-lock.json": true
+    },
+    "typescript.preferences.quoteStyle": "double",
+    "editor.detectIndentation": false,
+    "eslint.format.enable": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    }
+}

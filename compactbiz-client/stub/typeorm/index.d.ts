@@ -1,0 +1,34 @@
+export declare type ObjectType<T> = {
+    new(): T;
+} | Function;
+
+export declare function Column(p1?: any, p2?: any, p3?: any): any;
+export declare function PrimaryGeneratedColumn(p1?: any, p2?: any, p3?: any): any;
+export declare function Check(p1?: any, p2?: any, p3?: any): any;
+export declare function Embedded(p1?: any, p2?: any, p3?: any): any;
+export declare function EntityListener(p1?: any, p2?: any, p3?: any): any;
+export declare function ForeignKey(p1?: any, p2?: any, p3?: any): any;
+export declare function Index(p1?: any, p2?: any, p3?: any): any;
+export declare function RelationCount(p1?: any, p2?: any, p3?: any): any;
+export declare function RelationId(p1?: any, p2?: any, p3?: any): any;
+export declare function Relation(p1?: any, p2?: any, p3?: any): any;
+export declare function Unique(p1?: any, p2?: any, p3?: any): any;
+export declare function OneToMany<T>(p1?: (type?: any) => ObjectType<T>, p2?: (object: T) => any, p3?: any): any;
+export declare function Entity(p1?: any, p2?: any, p3?: any): any;
+export declare function ManyToMany<T>(p1?: (type?: any) => ObjectType<T>, p2?: (object: T) => any, p3?: any): any;
+export declare function JoinTable(p1?: any, p2?: any, p3?: any): any;
+export declare function ManyToOne<T>(p1?: (type?: any) => ObjectType<T>, p2?: (object: T) => any, p3?: any): any;
+export declare function PrimaryColumn(p1?: any, p2?: any, p3?: any): any;
+export declare function AfterLoad(p1?: any, p2?: any, p3?: any): any;
+export declare function AfterInsert(p1?: any, p2?: any, p3?: any): any;
+export declare function AfterUpdate(p1?: any, p2?: any, p3?: any): any;
+export declare function JoinColumn(p1?: any, p2?: any, p3?: any): any;
+export declare function BeforeInsert(p1?: any, p2?: any, p3?: any): any;
+export declare function BeforeUpdate(p1?: any, p2?: any, p3?: any): any;
+export declare function OneToOne<T>(p1?: (type?: any) => ObjectType<T>, p2?: (object: T) => any, p3?: any): any;
+export declare function DeepPartial(p1?: any, p2?: any, p3?: any): any;
+export declare function ChildEntity(p1?: any, p2?: any, p3?: any): any;
+export declare function TableInheritance(p1?: any, p2?: any, p3?: any): any;
+export declare function ViewColumn(p1?: any, p2?: any, p3?: any): any;
+export declare function ViewEntity(p1?: any, p2?: any, p3?: any): any;
+export declare function CreateDateColumn(p1?: any, p2?: any, p3?: any): any;
