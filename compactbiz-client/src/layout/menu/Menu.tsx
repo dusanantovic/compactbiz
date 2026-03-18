@@ -35,7 +35,7 @@ interface MenuResource {
 }
 
 const RESOURCE_ICONS: Record<string, React.ElementType> = {
-    users: PeopleIcon,
+    "users/staff": PeopleIcon,
     products: CategoryIcon,
     orders: ReceiptLongIcon,
     brands: LocalOfferIcon,
