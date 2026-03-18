@@ -69,7 +69,7 @@ export class ProductController extends BaseController {
     }
 
     @Get("/products/:identity([-0-9]+)")
-    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager])
+    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales])
     public async getProductByIdentity(@Param("identity") identity: string, @AppCtx() context: Context): Promise<Product> {
         const { company } = context.state;
         assert(company, ["Missing company"]);
@@ -83,7 +83,7 @@ export class ProductController extends BaseController {
     }
 
     @Get("/products/:identity([-0-9]+)/history")
-    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager])
+    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales])
     public async getProductHistory(@Param("identity") identity: string, @AppCtx() context: Context, @Res() response: Response): Promise<PackageAdjustment[]> {
         const { company, facilityId } = context.state;
         assert(company, ["Missing company"]);

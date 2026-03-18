@@ -40,7 +40,7 @@ export class BrandController extends BaseController {
     }
 
     @Get("/brands")
-    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager])
+    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales])
     public async getBrand(@AppCtx() context: Context, @Res() response: Response): Promise<Brand[]> {
         const { company } = context.state;
         assert(company, ["Missing company"]);
@@ -51,7 +51,7 @@ export class BrandController extends BaseController {
     }
 
     @Get("/brands/:identity([-0-9]+)")
-    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager])
+    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales])
     public async getBrandByIdentity(@Param("identity") identity: string, @AppCtx() context: Context): Promise<Brand> {
         const { company } = context.state;
         assert(company, ["Missing company"]);

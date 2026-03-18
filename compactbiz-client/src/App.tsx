@@ -76,7 +76,7 @@ const App = () => {
                             options={{
                                 key: 2,
                                 label: "Products",
-                                visible: permissions !== Role.Warehouseman && permissions !== Role.Sales && permissions !== Role.Driver
+                                visible: permissions !== Role.Warehouseman && permissions !== Role.Driver
                             }}
                         />
                         <Resource
@@ -98,7 +98,7 @@ const App = () => {
                             options={{
                                 key: 4,
                                 label: "Brands",
-                                visible: permissions !== Role.Warehouseman && permissions !== Role.Sales && permissions !== Role.Driver
+                                visible: permissions !== Role.Warehouseman && permissions !== Role.Driver
                             }}
                         />
                         <Resource
@@ -109,7 +109,7 @@ const App = () => {
                             options={{
                                 key: 5,
                                 label: "Facilities",
-                                visible: permissions !== Role.Warehouseman && permissions !== Role.Sales && permissions !== Role.Driver
+                                visible: permissions !== null && [Role.Manager, Role.Owner].includes(permissions)
                             }}
                         />
                         <Resource
@@ -120,7 +120,7 @@ const App = () => {
                             options={{
                                 key: 6,
                                 label: "Businesses",
-                                visible: permissions !== Role.Warehouseman && permissions !== Role.Sales && permissions !== Role.Driver
+                                visible: permissions !== Role.Warehouseman && permissions !== Role.Driver
                             }}
                         />
                         <Resource
@@ -128,7 +128,7 @@ const App = () => {
                             options={{
                                 key: 7,
                                 label: "MyCompany",
-                                visible: permissions !== Role.Warehouseman && permissions !== Role.Sales && permissions !== Role.Driver
+                                visible: permissions !== null && [Role.Manager, Role.Owner].includes(permissions)
                             }}
                         />
                         {permissions === Role.Admin && (
