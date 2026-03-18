@@ -135,7 +135,7 @@ export class UserController extends BaseController {
         assert(company, ["Unknown company"], ForbiddenError);
         assert(facilityId, ["Unknown facility"], ForbiddenError);
         const options = this.extractQuery(context);
-        const qb = this.userRepo.browse(options, company?.id, facilityId);
+        const qb = this.userRepo.browse(options, company.id, facilityId);
         const [users, count] = await qb.getManyAndCount();
         response.set("content-range", count.toString());
         return users;
