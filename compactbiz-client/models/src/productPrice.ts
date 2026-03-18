@@ -4,6 +4,7 @@ import { Type } from "class-transformer";
 import { BaseModel } from "./baseModel";
 import { assert, validator } from "./util";
 import { OrderType } from "../enums";
+import { Business } from "./business";
 import { Product } from "./product";
 
 @Entity()
@@ -33,6 +34,17 @@ export class ProductPrice extends BaseModel<ProductPriceKey> implements ProductP
 
     @Column({ type: "enum", enum: OrderType, nullable: false })
     type: OrderType;
+
+    @ManyToOne(() => Business, { persistence: false })
+    @Type(() => Business)
+    @JoinColumn([{
+        name: "companyId",
+        referencedColumnName: "companyId"
+    }, {
+        name: "businessId",
+        referencedColumnName: "id"
+    }])
+    business: Business;
 
     @ManyToOne(() => Product, p => p.prices, { onDelete: "CASCADE", onUpdate: "NO ACTION" })
     @Type(() => Product)

@@ -65,8 +65,8 @@ const ProductForm = ({ ...props }) => {
                         <ArrayField source="prices">
                             <Datagrid bulkActionButtons={false}>
                                 <TextField source={pp(x => x.id)} label="#ID" />
-                                <TextField source={pp(x => x.businessId)} label={translate(`resources.misc.business`, { smart_count: 1, })} />
-                                <TextField source={pp(x => x.price)} label={translate(`resources.misc.price`, { smart_count: 1, })} />
+                                <TextField source="business.name" label={translate(`resources.misc.business`, { smart_count: 1, })} />
+                                <TextField source={pp(x => x.price)} label={translate(`resources.misc.lastPrice`, { smart_count: 1, })} />
                                 <TextField source={pp(x => x.type)} label={translate(`resources.misc.type`, { smart_count: 1, })} />
                             </Datagrid>
                         </ArrayField>

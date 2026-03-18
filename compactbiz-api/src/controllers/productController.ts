@@ -76,7 +76,7 @@ export class ProductController extends BaseController {
         const productKey = Product.parse(identity);
         productKey.companyId = company.id;
         const options = this.extractQuery(context);
-        options.relations = ["brand", "prices"];
+        options.relations = ["brand", "prices", "prices.business"];
         const productDb = await this.productRepo.browseOne(productKey, options);
         assert(productDb, ["Product doesn't exist"]);
         return productDb;

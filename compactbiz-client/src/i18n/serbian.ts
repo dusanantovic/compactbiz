@@ -91,6 +91,7 @@ const customSerbianMessages: TranslationMessages = {
             role: "Uloga",
             type: "Tip",
             price: "Cena",
+            lastPrice: "Poslednja korišćena cena",
             purchase: "Kupovina",
             sell: "Prodaja",
             both: "Oba",

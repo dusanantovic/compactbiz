@@ -91,6 +91,7 @@ const customEnglishMessages: TranslationMessages = {
             role: "Role",
             type: "Type",
             price: "Price",
+            lastPrice: "Last used price",
             purchase: "Purchase",
             sell: "Sell",
             both: "Both",
