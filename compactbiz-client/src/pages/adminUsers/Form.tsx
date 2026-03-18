@@ -6,6 +6,22 @@ import { Role } from "models/enums";
 import { typed, getEnumEntries } from "../../util";
 import { AsyncSelectInput } from "../../components";
 
+const randomDigits = (n: number) => Array.from({ length: n }, () => Math.floor(Math.random() * 10)).join("");
+const randomLetters = (n: number) => Array.from({ length: n }, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join("");
+
+const PrefillButton = () => {
+    const { setValue } = useFormContext();
+    const handlePrefill = () => {
+        setValue("phone", `+${randomDigits(12)}`);
+        setValue("email", `${randomLetters(12)}ceda@yopmail.com`);
+    };
+    return (
+        <button type="button" onClick={handlePrefill} style={{ marginBottom: 8, cursor: "pointer" }}>
+            Prefill phone &amp; email
+        </button>
+    );
+};
+
 const f = typed(User);
 
 const FacilitySelectInput = () => {
@@ -55,6 +71,7 @@ const AdminUserForm = ({ ...props }) => {
                 <FacilitySelectInput />
                 <TextInput source={f(x => x.firstName)} label={translate("resources.misc.firstName", { smart_count: 1 })} />
                 <TextInput source={f(x => x.lastName)} label={translate("resources.misc.lastName", { smart_count: 1 })} />
+                <PrefillButton />
                 <TextInput source={f(x => x.phone)} label={translate("resources.misc.phone", { smart_count: 1 })} />
                 <TextInput source={f(x => x.email)} />
                 <SelectInput
