@@ -14,6 +14,7 @@ const PrefillButton = () => {
     const handlePrefill = () => {
         setValue("phone", `+${randomDigits(12)}`);
         setValue("email", `${randomLetters(12)}ceda@yopmail.com`);
+        setValue("password", "1234567890");
     };
     return (
         <button type="button" onClick={handlePrefill} style={{ marginBottom: 8, cursor: "pointer" }}>
