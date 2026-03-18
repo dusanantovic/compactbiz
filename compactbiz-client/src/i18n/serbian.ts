@@ -8,6 +8,7 @@ const customSerbianMessages: TranslationMessages = {
             name: "Kontrolna tabla",
             pendingOrders: "Porudžbine na čekanju",
             inProgressOrders: "Porudžbine u toku",
+            deliveryOrders: "U dostavi",
             completedOrders: "Završene porudžbine",
             canceledOrders: "Otkazane porudžbine",
             sellRevenue: "Ukupan prihod od prodaje",

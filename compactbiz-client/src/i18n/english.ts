@@ -8,6 +8,7 @@ const customEnglishMessages: TranslationMessages = {
             name: "Dashboard",
             pendingOrders: "Pending Orders",
             inProgressOrders: "In Progress",
+            deliveryOrders: "In Delivery",
             completedOrders: "Completed Orders",
             canceledOrders: "Canceled Orders",
             sellRevenue: "Total Sales Revenue",

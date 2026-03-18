@@ -23,7 +23,17 @@ export class DashboardController extends BaseController {
                 .filter((r: any) => r.status === status)
                 .reduce((sum: number, r: any) => sum + parseInt(r.count || "0", 10), 0);
 
-        if (user?.role === Role.Warehouseman || user?.role === Role.Driver) {
+        if (user?.role === Role.Driver) {
+            return {
+                orders: {
+                    delivery: countByStatus(OrderStatus.Delivery),
+                    completed: countByStatus(OrderStatus.Complete),
+                    canceled: countByStatus(OrderStatus.Canceled),
+                },
+            };
+        }
+
+        if (user?.role === Role.Warehouseman) {
             return {
                 orders: {
                     pending: countByStatus(OrderStatus.Pending),

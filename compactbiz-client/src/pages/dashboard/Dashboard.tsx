@@ -19,12 +19,13 @@ import { http } from "../../http";
 import { buildHttpUrl } from "../../httpDataProvider";
 
 interface OrderSummary {
-    pending: number;
-    inProgress: number;
+    pending?: number;
+    inProgress?: number;
+    delivery?: number;
     completed: number;
     canceled: number;
-    sellRevenue: number;
-    purchaseCost: number;
+    sellRevenue?: number;
+    purchaseCost?: number;
 }
 
 interface ProductSummary {
@@ -118,20 +119,33 @@ export const Dashboard = () => {
             {/* Order stats */}
             {orders && (
                 <Grid container spacing={2} mb={3}>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <StatCard
-                            label={translate("resources.dashboard.pendingOrders", { smart_count: 1 })}
-                            value={orders.pending}
-                            color="warning.main"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <StatCard
-                            label={translate("resources.dashboard.inProgressOrders", { smart_count: 1 })}
-                            value={orders.inProgress}
-                            color="info.main"
-                        />
-                    </Grid>
+                    {orders.pending != null && (
+                        <Grid item xs={12} sm={6} md={3}>
+                            <StatCard
+                                label={translate("resources.dashboard.pendingOrders", { smart_count: 1 })}
+                                value={orders.pending}
+                                color="warning.main"
+                            />
+                        </Grid>
+                    )}
+                    {orders.inProgress != null && (
+                        <Grid item xs={12} sm={6} md={3}>
+                            <StatCard
+                                label={translate("resources.dashboard.inProgressOrders", { smart_count: 1 })}
+                                value={orders.inProgress}
+                                color="info.main"
+                            />
+                        </Grid>
+                    )}
+                    {orders.delivery != null && (
+                        <Grid item xs={12} sm={6} md={3}>
+                            <StatCard
+                                label={translate("resources.dashboard.deliveryOrders", { smart_count: 1 })}
+                                value={orders.delivery}
+                                color="info.main"
+                            />
+                        </Grid>
+                    )}
                     <Grid item xs={12} sm={6} md={3}>
                         <StatCard
                             label={translate("resources.dashboard.completedOrders", { smart_count: 1 })}

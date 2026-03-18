@@ -280,7 +280,7 @@ export class UserController extends BaseController {
         assert(loginBody.password, ["Password is required"]);
         const userDb = await this.userRepo.findOne({
             where: {
-                email: loginBody.email
+                email: loginBody.email.toLowerCase()
             },
             relations: ["facilities"]
         });
