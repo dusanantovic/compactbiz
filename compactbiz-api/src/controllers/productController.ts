@@ -6,7 +6,7 @@ import { BaseController } from "./baseController";
 import { ProductRepository } from "../repositories";
 import { AppCtx, Context } from "../../context";
 import { ProductService } from "../services";
-import { Package, PackageAdjustment, Product } from "../../models";
+import { Business, Package, PackageAdjustment, Product } from "../../models";
 
 @Controller()
 export class ProductController extends BaseController {
@@ -93,6 +93,7 @@ export class ProductController extends BaseController {
         const adjustments = await this.connection.manager
             .createQueryBuilder(PackageAdjustment, "pa")
             .innerJoin(Package, "pkg", `pkg."companyId" = pa."companyId" AND pkg."facilityId" = pa."facilityId" AND pkg."id" = pa."packageId"`)
+            .leftJoinAndMapOne("pa.business", Business, "b", `b."companyId" = pa."companyId" AND b."id" = pa."businessId"`)
             .where(`pkg."companyId" = :companyId`, { companyId: company.id })
             .andWhere(`pkg."facilityId" = :facilityId`, { facilityId })
             .andWhere(`pkg."productId" = :productId`, { productId: productKey.id })

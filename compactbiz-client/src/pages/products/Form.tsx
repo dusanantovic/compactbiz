@@ -28,7 +28,7 @@ const HistoryTab = () => {
                 <TextField source="id" label="#ID" />
                 <TextField source="type" label="Type" />
                 <TextField source="delta" label="Delta" />
-                <TextField source="businessId" label="Business ID" />
+                <TextField source="business.name" label="Business" />
                 <TextField source="orderId" label="Order ID" />
                 <TextField source="note" label="Note" />
             </Datagrid>
