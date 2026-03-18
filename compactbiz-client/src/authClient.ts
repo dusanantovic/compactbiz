@@ -1,4 +1,4 @@
-import { NonAuthorizedError } from "../models";
+
 import { ChangePasswordBody, LoginResponse, RefreshBody, SendTempPinBody, StaffVerifyBody, VerifyBody } from "../models/interfaces";
 import { config } from "./config";
 import { clearCredentials, initCache } from "./cache";
@@ -22,6 +22,11 @@ export const login = async (email: string, password: string): Promise<boolean> =
     });
     initCache();
     return true;
+};
+
+export const checkUser = async (email: string): Promise<{ verified: boolean }> => {
+    const response = await http(`${config.apiUrl}/users/check?email=${encodeURIComponent(email)}`);
+    return response.json as { verified: boolean };
 };
 
 export const sendTempPin = async (email: string) => {
@@ -96,7 +101,7 @@ export const refresh = async (refreshToken: string, oldIdToken: string): Promise
             return true;
         } else {
             const data = await result.json();
-            if (data.name === new NonAuthorizedError().name) {
+            if (data.name === "NonAuthorizedError") {
                 clearCredentials();
                 window.location.reload();
             }

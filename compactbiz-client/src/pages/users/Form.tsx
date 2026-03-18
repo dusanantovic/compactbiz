@@ -50,7 +50,7 @@ const UserForm = ({ ...props }) => {
 };
 
 export const UserCreate = () => (
-    <Create resource="users/staff">
+    <Create>
         <UserForm />
     </Create>
 );
