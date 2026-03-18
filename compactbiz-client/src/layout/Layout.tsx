@@ -38,5 +38,23 @@ export const BizLayout = styled(BizLayoutComponent)(({ theme }) => ({
             width: `calc(100vw - ${theme.spacing(2)})`,
             overflowX: "auto !important"
         }
+    },
+    [`& .RaList-main`]: {
+        overflowX: "scroll",
+        maxWidth: `calc(100vw - 30px)`
+       
+    },
+    [`& .RaList-main.asideOpen`]: {
+        maxWidth: `calc(100vw - 310px)`
+    },
+    [`& .RaLayout-appFrame.sidebarOpened .RaList-main.asideOpen`]: {
+        maxWidth: `calc(100vw - 550px)`
+    },
+    [`& .RaLayout-appFrame.sidebarOpened .RaList-main`]: {
+        maxWidth: `calc(100vw - 270px)`,
+        [theme.breakpoints.down("sm")]: {
+            maxWidth: `100vw`,
+            overflowX: "auto !important"
+        }
     }
 }));

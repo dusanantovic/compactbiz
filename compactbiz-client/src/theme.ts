@@ -84,6 +84,13 @@ let muiTheme = createTheme({
                     height: "40px"
                 }
             }
+        },
+        MuiCollapse:{
+            styleOverrides: {
+                root: {
+                    transition: "none"
+                }
+            }
         }
     }
 });

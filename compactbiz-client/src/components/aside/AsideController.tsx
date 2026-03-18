@@ -22,6 +22,13 @@ interface AsideControllerProps {
 
 const AsideControllerComponent = ({ source, searchPlaceholder, addButtonText, children }: AsideControllerProps) => {
     const { open, toggleOpen } = useOpenAside();
+
+    React.useEffect(() => {
+        const main = document.querySelector(".RaList-main");
+        if (main) {
+            main.classList.toggle("asideOpen", open);
+        }
+    }, [open]);
     const isSmall = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
     const nav = useNavigate();
     const translate = useTranslate();

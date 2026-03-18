@@ -36,7 +36,7 @@ export const AsideControllerPanel = styled("div")<{ open: boolean }>(({ open, th
     width: open ? "280px" : "0px",
     flexShrink: 0,
     overflow: "hidden",
-    transition: "width 0.22s cubic-bezier(0.4, 0, 0.2, 1)",
+    //transition: "width 0.22s cubic-bezier(0.4, 0, 0.2, 1)",
     borderLeft: open ? "1px solid rgba(0,0,0,0.07)" : "none",
     backgroundColor: "#ffffff",
     height: "100%",
