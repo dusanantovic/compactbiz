@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Datagrid, Empty, TextField, useTranslate } from "react-admin";
+import { Datagrid, Empty, FunctionField, TextField, useTranslate } from "react-admin";
 import { OrderAside } from "./Aside";
 import { BizList } from "../../styledComponents";
 import { typed } from "../../util";
@@ -18,7 +18,7 @@ export const OrderList = () => {
         >
             <Datagrid>
                 <TextField source={o(x => x.id)} label="#ID" />
-                <TextField source={o(x => x.type)} label={translate(`resources.orders.type`, { smart_count: 1, })} />
+                <FunctionField source={o(x => x.type)} label={translate(`resources.orders.type`, { smart_count: 1, })} render={(record: any) => translate(`resources.misc.${record.type?.toLowerCase()}`, { smart_count: 1 })} />
                 <TextField source={o(x => x.total)} label={translate(`resources.orders.total`, { smart_count: 1, })} />
                 <TextField source={o(x => x.business.name)} label={translate(`resources.orders.business.name`, { smart_count: 1, })} sortable={false} />
                 <TextField source={o(x => x.status)} label={translate(`resources.orders.status`, { smart_count: 1, })} />
