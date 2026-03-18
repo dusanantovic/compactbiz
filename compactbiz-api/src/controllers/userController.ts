@@ -132,8 +132,8 @@ export class UserController extends BaseController {
     @Authorized([Role.Manager, Role.Owner])
     public async getStaff(@AppCtx() context: Context, @Res() response: Response): Promise<User[]> {
         const { company, facilityId } = context.state;
-        assert(company, ["Unknown company"], ForbiddenError);
-        assert(facilityId, ["Unknown facility"], ForbiddenError);
+        assert(company, ["Missing company"], ForbiddenError);
+        assert(facilityId, ["Missing facility"], ForbiddenError);
         const options = this.extractQuery(context);
         const qb = this.userRepo.browse(options, company.id, facilityId);
         const [users, count] = await qb.getManyAndCount();
