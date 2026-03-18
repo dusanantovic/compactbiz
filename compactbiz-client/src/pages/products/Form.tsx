@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { ArrayField, Create, Datagrid, Edit, ListContextProvider, NumberInput, SelectInput, TabbedForm, TextField, TextInput, useList, useRecordContext, useTranslate } from "react-admin";
+import { ArrayField, Create, Datagrid, Edit, FunctionField, ListContextProvider, NumberInput, SelectInput, TabbedForm, TextField, TextInput, useList, useRecordContext, useTranslate } from "react-admin";
 import { typed } from "../../util";
 import { AsyncSelectInput } from "../../components";
 import { useLocation } from "react-router-dom";
@@ -29,7 +29,11 @@ const HistoryTab = () => {
                 <TextField source="type" label="Type" />
                 <TextField source="delta" label="Delta" />
                 <TextField source="business.name" label="Business" />
-                <TextField source="orderId" label="Order ID" />
+                <FunctionField source="orderId" label="Order ID" render={(record: any) =>
+                    record.orderId
+                        ? <a href={`#/orders/${record.companyId}-${record.facilityId}-${record.businessId}-${record.orderId}`}>{record.companyId}-{record.facilityId}-{record.businessId}-{record.orderId}</a>
+                        : null
+                } />
                 <TextField source="note" label="Note" />
             </Datagrid>
         </ListContextProvider>
