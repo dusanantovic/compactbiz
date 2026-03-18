@@ -1,3 +1,4 @@
+export { CheckStep } from "./CheckStep";
 export { LoginStep } from "./LoginStep";
 export { ForgotPassStep } from "./ForgotPassStep";
 export { VerifyStep } from "./Verify";

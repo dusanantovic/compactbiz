@@ -58,7 +58,7 @@ const App = () => {
                             <Route path={MyCompanyPage.path} element={<Authenticated><MyCompanyPage /></Authenticated>} />
                         </CustomRoutes>
                         <Resource
-                            name="users"
+                            name="users/staff"
                             list={UserList}
                             create={UserCreate}
                             edit={UserEdit}

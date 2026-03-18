@@ -1,18 +1,15 @@
-import { TemporaryPinHasAlreadySent, Unverified } from "../../../../models";
 import * as React from "react";
 import { useLogin, useNotify } from "react-admin";
-import { LoginTextField, LoginSmallTitle, LoginTitle, LoginTextFieldWithTop, SubmitButton, BottomTextWrapper, BottomTextLeft } from "../styledComponents";
+import { LoginSmallTitle, LoginTitle, SubmitButton, BottomTextWrapper, BottomTextLeft, BottomTextRight, LoginTextField } from "../styledComponents";
 import { errorMessageParser } from "../../../http";
-import { sendTempPin } from "../../../authClient";
 import { LoginStepType } from "../Login";
 
 interface LoginStepProps {
     email: string;
     handleStep: (step: LoginStepType) => void;
-    changeEmail: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const LoginStep = ({ email, handleStep, changeEmail }: LoginStepProps) => {
+export const LoginStep = ({ email, handleStep }: LoginStepProps) => {
     const [password, setPassword] = React.useState("");
     const [loading, setLoader] = React.useState(false);
     const login = useLogin();
@@ -30,22 +27,8 @@ export const LoginStep = ({ email, handleStep, changeEmail }: LoginStepProps) =>
         setLoader(true);
         try {
             await login({ email, password });
-        } catch (err1: any) {
-            notify(errorMessageParser(err1.message), { type: "error" });
-            if (err1.body?.name === new Unverified().name) {
-                let goToVerify = true;
-                try {
-                    await sendTempPin(email);
-                } catch (err2: any) {
-                    if (err2.body?.name !== new TemporaryPinHasAlreadySent().name) {
-                        notify(errorMessageParser(err2.message), { type: "error" });
-                        goToVerify = false;
-                    }
-                }
-                if (goToVerify) {
-                    handleStep(LoginStepType.Verify);
-                }
-            }
+        } catch (err: any) {
+            notify(errorMessageParser(err.message), { type: "error" });
         }
         setLoader(false);
     };
@@ -67,35 +50,25 @@ export const LoginStep = ({ email, handleStep, changeEmail }: LoginStepProps) =>
                 Welcome back!
             </LoginTitle>
             <LoginSmallTitle variant="h6">
-                Please login
+                {email}
             </LoginSmallTitle>
             <LoginTextField
-                type="email"
-                placeholder="Please enter your email"
-                value={email}
-                onChange={changeEmail}
-                onKeyUp={(e) => handleKeyUp(e)}
-            />
-            <LoginTextFieldWithTop
                 type="password"
                 placeholder="Please enter your password"
                 value={password}
                 onChange={changePassword}
                 onKeyUp={(e) => handleKeyUp(e)}
             />
-            <SubmitButton
-                onClick={handleSubmit}
-                disabled={loading}
-            >
+            <SubmitButton onClick={handleSubmit} disabled={loading}>
                 {loading ? "Loading..." : "Login"}
             </SubmitButton>
             <BottomTextWrapper>
                 <BottomTextLeft variant="body2" onClick={() => handleStep(LoginStepType.Forgot)}>
                     Forgot password
                 </BottomTextLeft>
-                {/* <BottomTextRight variant="body1" onClick={() => handleStep(LoginStepType.Signup)}>
-                    Signup
-                </BottomTextRight> */}
+                <BottomTextRight variant="body2" onClick={() => handleStep(LoginStepType.Check)}>
+                    Back
+                </BottomTextRight>
             </BottomTextWrapper>
         </>
     );

@@ -22,6 +22,15 @@ export class UserController extends BaseController {
         this.userRepo = this.repositoryProvider.getCustomRepository(User, UserRepository);
     }
 
+    @Get("/users/check")
+    public async checkUser(@Res() res: Response): Promise<Response> {
+        const email = trimAndLowerCase((res.req as any).query?.email);
+        assert(email, ["Email is required"]);
+        const user = await this.userRepo.findOne({ where: { email } });
+        assert(user, ["User doesn't exist"]);
+        return res.json({ verified: user.verified });
+    }
+
     @Post("/users")
     public async createUser(@Body() userBody: Partial<User>): Promise<User> {
         const savedUser = await this.connection.transaction(async manager => {
@@ -82,7 +91,7 @@ export class UserController extends BaseController {
     }
 
     @Put("/users/:identity([-0-9]+)")
-    @Authorized([Role.Manager, Role.Owner])
+    @Authorized()
     public async updateUser(@Param("identity") identity: string, @Body() userBody: Partial<User>): Promise<User> {
         const userKey = User.parse(identity);
         const user = await this.userRepo.findOne({
@@ -95,17 +104,60 @@ export class UserController extends BaseController {
     }
 
     @Get("/users")
-    @Authorized([Role.Manager, Role.Owner])
+    @Authorized()
     public async getUsers(@AppCtx() context: Context, @Res() response: Response): Promise<User[]> {
+        const options = this.extractQuery(context);
+        const qb = this.userRepo.browse(options);
+        const [users, count] = await qb.getManyAndCount();
+        response.set("content-range", count.toString());
+        return users;
+    }
+
+    @Put("/users/staff/:identity([-0-9]+)")
+    @Authorized([Role.Manager, Role.Owner])
+    public async updateStaff(@Param("identity") identity: string, @Body() userBody: Partial<User>, @AppCtx() context: Context): Promise<User> {
+        const { company } = context.state;
+        assert(company, ["Missing company"], ForbiddenError);
+        const userKey = User.parse(identity);
+        const user = await this.userRepo.findOne({
+            where: { ...userKey, employeedById: Not(IsNull()) }
+        });
+        assert(user, ["Staff member doesn't exist"]);
+        user.update(userBody);
+        const updatedUser = await this.userRepo.save(user);
+        return updatedUser;
+    }
+
+    @Get("/users/staff")
+    @Authorized([Role.Manager, Role.Owner])
+    public async getStaff(@AppCtx() context: Context, @Res() response: Response): Promise<User[]> {
         const { company, facilityId } = context.state;
+        assert(company, ["Unknown company"], ForbiddenError);
+        assert(facilityId, ["Unknown facility"], ForbiddenError);
         const options = this.extractQuery(context);
         const qb = this.userRepo.browse(options, company?.id, facilityId);
         const [users, count] = await qb.getManyAndCount();
         response.set("content-range", count.toString());
         return users;
     }
+
+    @Get("/users/staff/:identity([-0-9]+)")
+    @Authorized([Role.Manager, Role.Owner])
+    public async getOneStaff(@Param("identity") identity: string, @AppCtx() context: Context): Promise<User> {
+        const { company, facilityId } = context.state;
+        assert(company, ["Missing company"]);
+        assert(facilityId, ["Missing facillity"]);
+        const options = this.extractQuery(context);
+        const userKey = User.parse(identity);
+        options.where = { id: userKey.id };
+        const qb = this.userRepo.browse(options, company.id, facilityId);
+        const userDb = await qb.getOne();
+        assert(userDb, ["User doesn't exist"]);
+        return userDb;
+    }
+
     @Get("/users/:identity([-0-9]+)")
-    @Authorized([Role.Manager, Role.Owner, Role.Warehouseman])
+    @Authorized()
     public async getOneUser(@Param("identity") identity: string, @AppCtx() context: Context): Promise<User> {
         const { company } = context.state;
         assert(company, ["Missing company"]);

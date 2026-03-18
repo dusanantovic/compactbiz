@@ -10,6 +10,7 @@ import { CompanyRepository, RepositoryProvider, UserRepository } from "../src/re
 import { RouteList, matchRoutesPathAndMethod } from "../matchPathAndMethod";
 
 const withoutUserList: RouteList[] = [
+    { path: "/api/users/check", method: "GET" },
     { path: "/api/users", method: "POST" },
     { path: "/api/users/login", method: "POST" },
     { path: "/api/users/refresh", method: "POST" },
