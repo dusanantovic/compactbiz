@@ -12,13 +12,9 @@ export const useOpenAside = () => {
     React.useEffect(() => {
         if (isSmall || isMedium) {
             setOpen(false);
-        } else if (isLarge) {
-            setOpen(true);
-        } else {
-            setOpen(true);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isSmall, isMedium, isLarge]);
+    }, [isSmall, isMedium]);
 
     const toggleOpen = () => {
         localStorage.setItem("openAside", String(!open));

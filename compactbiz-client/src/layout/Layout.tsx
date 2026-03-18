@@ -11,9 +11,9 @@ const BizLayoutComponent = ({ ...props }: CoreLayoutProps) => {
     return (
         <Layout
             {...props}
-            menu={(menuProps) => <BizMenu {...menuProps} />}
-            appBar={(appBarProps) => <BizAppBar {...appBarProps} />}
-            sidebar={(sidebarProps) => <BizSidebar { ...sidebarProps } />}
+            menu={BizMenu}
+            appBar={BizAppBar}
+            sidebar={BizSidebar}
         />
     );
 };
