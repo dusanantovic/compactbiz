@@ -33,7 +33,7 @@ export class TokenGenerator {
     private readonly idTokenSecret: string;
     private readonly accessTokenSecret: string;
     private readonly refreshTokenSecret: string;
-    private readonly idTokenLife = "1h";
+    private readonly idTokenLife = "5d";
     private readonly accessTokenLife = "1h";
     private readonly refreshTokenLife = "7d";
     private readonly algorithm = "HS512";
@@ -109,6 +109,7 @@ export class TokenGenerator {
             const secret = type === TokenVerifyType.IdToken ? this.idTokenSecret : this.refreshTokenSecret;
             jwtVerify(token, secret);
         } catch (err: any) {
+            //throw new UnauthorizedError("Token expired, refreshing session");
             throwError(["Token expired"], NonAuthorizedError);
         }
     }

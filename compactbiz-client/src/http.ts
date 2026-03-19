@@ -26,7 +26,7 @@ export const http = async (url: string, options: any = {}) => {
                 if (refResult) {
                     const newIdToken = localStorage.getItem("idToken");
                     if (newIdToken) {
-                        options.headers.set("Authorization", "bearer " + newIdToken);
+                        options.headers.set("Authorization", "Bearer " + newIdToken);
                     }
                     try {
                         const response = await fetchUtils.fetchJson(url, options);
