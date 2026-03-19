@@ -1,10 +1,11 @@
 import * as React from "react";
 import { Create, SelectInput, TabbedForm, TextInput, useTranslate } from "react-admin";
+import { Button, Grid } from "@mui/material";
 import { useFormContext, useWatch } from "react-hook-form";
 import { User } from "models";
 import { Role } from "models/enums";
 import { typed, getEnumEntries } from "../../util";
-import { AsyncSelectInput } from "../../components";
+import { AsyncSelectInput, FormField } from "../../components";
 
 const randomDigits = (n: number) => Array.from({ length: n }, () => Math.floor(Math.random() * 10)).join("");
 const randomLetters = (n: number) => Array.from({ length: n }, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join("");
@@ -17,9 +18,9 @@ const PrefillButton = () => {
         setValue("password", "1234567890");
     };
     return (
-        <button type="button" onClick={handlePrefill} style={{ marginBottom: 8, cursor: "pointer" }}>
+        <Button type="button" variant="outlined" size="small" onClick={handlePrefill} sx={{ mb: 1 }}>
             Prefill phone &amp; email
-        </button>
+        </Button>
     );
 };
 
@@ -64,23 +65,59 @@ const AdminUserForm = ({ ...props }) => {
     return (
         <TabbedForm {...props}>
             <TabbedForm.Tab label={translate("resources.misc.data", { smart_count: 1 })}>
-                <AsyncSelectInput
-                    source="companyId"
-                    resource="companies"
-                    label={translate("resources.misc.company", { smart_count: 1 })}
-                />
-                <FacilitySelectInput />
-                <TextInput source={f(x => x.firstName)} label={translate("resources.misc.firstName", { smart_count: 1 })} />
-                <TextInput source={f(x => x.lastName)} label={translate("resources.misc.lastName", { smart_count: 1 })} />
-                <PrefillButton />
-                <TextInput source={f(x => x.phone)} label={translate("resources.misc.phone", { smart_count: 1 })} />
-                <TextInput source={f(x => x.email)} />
-                <SelectInput
-                    source={f(x => x.role)}
-                    label={translate("resources.misc.role", { smart_count: 1 })}
-                    choices={roleChoices}
-                />
-                <TextInput source={f(x => x.password)} label={translate("resources.misc.password", { smart_count: 1 })} />
+                <Grid container spacing={2} sx={{ width: "100%" }}>
+                    <Grid item xs={12} sm={6}>
+                        <FormField>
+                            <AsyncSelectInput
+                                source="companyId"
+                                resource="companies"
+                                label={translate("resources.misc.company", { smart_count: 1 })}
+                            />
+                        </FormField>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormField>
+                            <FacilitySelectInput />
+                        </FormField>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormField>
+                            <TextInput source={f(x => x.firstName)} label={translate("resources.misc.firstName", { smart_count: 1 })} />
+                        </FormField>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormField>
+                            <TextInput source={f(x => x.lastName)} label={translate("resources.misc.lastName", { smart_count: 1 })} />
+                        </FormField>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <PrefillButton />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormField>
+                            <TextInput source={f(x => x.phone)} label={translate("resources.misc.phone", { smart_count: 1 })} />
+                        </FormField>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormField>
+                            <TextInput source={f(x => x.email)} label={translate("resources.misc.email", { smart_count: 1 })} />
+                        </FormField>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormField>
+                            <SelectInput
+                                source={f(x => x.role)}
+                                label={translate("resources.misc.role", { smart_count: 1 })}
+                                choices={roleChoices}
+                            />
+                        </FormField>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormField>
+                            <TextInput source={f(x => x.password)} label={translate("resources.misc.password", { smart_count: 1 })} />
+                        </FormField>
+                    </Grid>
+                </Grid>
             </TabbedForm.Tab>
         </TabbedForm>
     );

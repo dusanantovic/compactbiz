@@ -149,7 +149,7 @@ const serbianMessages: TranslationMessages = {
         },
         notification: {
             updated: "Element updated |||| %{smart_count} elements updated",
-            created: "Element kreiran",
+            created: "Stavka kreirana",
             deleted: "Element deleted |||| %{smart_count} elements deleted",
             bad_item: "Incorrect element",
             item_doesnt_exist: "Element does not exist",

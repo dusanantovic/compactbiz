@@ -80,6 +80,9 @@ const customEnglishMessages: TranslationMessages = {
         misc: {
             business: "Business |||| Businesses",
             partner: "Partner |||| Partners",
+            email: "Email",
+            status: "Status",
+            brand: "Brand |||| Brands",
             phone: "Phone |||| Phones",
             verified: "Verified |||| Verified",
             name: "Name |||| Names",

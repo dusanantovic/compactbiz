@@ -2,7 +2,7 @@ import * as React from "react";
 import { Order, OrderDetail } from "../../../models";
 import { ArrayInput, Create, NumberInput, SelectInput, SimpleFormIterator, TabbedForm, FormDataConsumer, useTranslate, Edit, TextInput, SaveButton, Toolbar, useRecordContext, useNotify, usePermissions, useRedirect } from "react-admin";
 import { typed } from "../../util";
-import { AsyncSelectInput } from "../../components";
+import { AsyncSelectInput, FormField } from "../../components";
 import { Box, Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
@@ -173,24 +173,24 @@ const BusinessAddressCard = () => {
     return (
         <Card variant="outlined" sx={{ borderRadius: 2, width: "100%", maxHeight: 300, overflow: "hidden" }}>
             <CardContent sx={{ pb: "16px !important" }}>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <Typography variant="subtitle2" sx={{ color: "#64748b" }} gutterBottom>
                     {businessName} — {translate("resources.misc.address")}
                 </Typography>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 1 }}>
                     <Box>
-                        <Typography variant="caption" color="text.secondary">{translate("resources.misc.country")}</Typography>
+                        <Typography variant="caption" sx={{ color: "#64748b" }}>{translate("resources.misc.country")}</Typography>
                         <Typography variant="body2">{address.country}</Typography>
                     </Box>
                     <Box>
-                        <Typography variant="caption" color="text.secondary">{translate("resources.misc.city")}</Typography>
+                        <Typography variant="caption" sx={{ color: "#64748b" }}>{translate("resources.misc.city")}</Typography>
                         <Typography variant="body2">{address.city}</Typography>
                     </Box>
                     <Box>
-                        <Typography variant="caption" color="text.secondary">{translate("resources.misc.street")}</Typography>
+                        <Typography variant="caption" sx={{ color: "#64748b" }}>{translate("resources.misc.street")}</Typography>
                         <Typography variant="body2">{address.street} {address.streetNumber}</Typography>
                     </Box>
                     <Box>
-                        <Typography variant="caption" color="text.secondary">{translate("resources.misc.zip")}</Typography>
+                        <Typography variant="caption" sx={{ color: "#64748b" }}>{translate("resources.misc.zip")}</Typography>
                         <Typography variant="body2">{address.zip}</Typography>
                     </Box>
                 </Box>
@@ -208,80 +208,102 @@ const OrderForm = ({ toolbar, disabled, ...props }: { toolbar?: React.ReactEleme
             >
                 <Grid container spacing={2} sx={{ width: "100%" }}>
                     <Grid item xs={12} md={8}>
-                        <AsyncSelectInput
-                            label={translate(`resources.misc.partner`, { smart_count: 1 })}
-                            resource="businesses"
-                            source={o(x => x.businessId)}
-                            disabled={disabled}
-                        />
-                        <SelectInput
-                            source={o(x => x.type)}
-                            label={translate(`resources.misc.type`, { smart_count: 1, })}
-                            disabled={disabled}
-                            choices={[
-                                { id: "Purchase", name: translate(`resources.misc.purchase`, { smart_count: 1 }) },
-                                { id: "Sell", name: translate(`resources.misc.sell`, { smart_count: 1 }) }
-                            ]}
-                        />
-                        <FormDataConsumer>
-                            {({ formData }: { formData: Order }) => {
-                                if (!disabled && (!formData?.businessId || !formData?.type)) {
-                                    return <></>;
-                                }
-                                return (
-                                    <ArrayInput
-                                        source={o(x => x.details)}
-                                        label={translate(`resources.misc.detail`, { smart_count: 2 })}
+                        <Grid container spacing={2} alignItems="flex-start">
+                            <Grid item xs={12} sm={6}>
+                                <FormField>
+                                    <AsyncSelectInput
+                                        label={translate(`resources.misc.partner`, { smart_count: 1 })}
+                                        resource="businesses"
+                                        source={o(x => x.businessId)}
                                         disabled={disabled}
-                                    >
-                                        <SimpleFormIterator inline disableAdd={disabled} disableRemove={disabled} disableReorder={disabled}>
-                                            <AsyncSelectInput
-                                                label={translate(`resources.misc.product`, { smart_count: 1 })}
-                                                resource="products"
-                                                source={od(x => x.productId)}
+                                    />
+                                </FormField>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <FormField>
+                                    <SelectInput
+                                        source={o(x => x.type)}
+                                        label={translate(`resources.misc.type`, { smart_count: 1, })}
+                                        disabled={disabled}
+                                        choices={[
+                                            { id: "Purchase", name: translate(`resources.misc.purchase`, { smart_count: 1 }) },
+                                            { id: "Sell", name: translate(`resources.misc.sell`, { smart_count: 1 }) }
+                                        ]}
+                                    />
+                                </FormField>
+                            </Grid>
+                            <FormDataConsumer>
+                                {({ formData }: { formData: Order }) => {
+                                    if (!formData?.businessId || !formData?.type) {
+                                        return <></>;
+                                    }
+                                    return (
+                                        <Grid item xs={12}>
+                                            <ArrayInput
+                                                source={o(x => x.details)}
+                                                label={translate(`resources.misc.detail`, { smart_count: 2 })}
                                                 disabled={disabled}
-                                                filterToQuery={() => ({
-                                                    orderType: formData.type,
-                                                    businessId: formData.businessId
-                                                })}
-                                            />
-                                            <FormDataConsumer>
-                                                {({ scopedFormData }) => {
-                                                    if (!disabled && !scopedFormData?.productId) {
-                                                        return <></>;
-                                                    }
-                                                    return (
-                                                        <NumberInput
-                                                            source={od(x => x.quantity)}
-                                                            label={translate(`resources.misc.quantity`, { smart_count: 1 })}
+                                            >
+                                                <SimpleFormIterator inline disableAdd={disabled} disableRemove={disabled} disableReordering={disabled} reOrderButtons={<></>}>
+                                                    <FormField>
+                                                        <AsyncSelectInput
+                                                            label={translate(`resources.misc.product`, { smart_count: 1 })}
+                                                            resource="products"
+                                                            source={od(x => x.productId)}
                                                             disabled={disabled}
+                                                            filterToQuery={() => ({
+                                                                orderType: formData.type,
+                                                                businessId: formData.businessId
+                                                            })}
                                                         />
-                                                    );
-                                                }}
-                                            </FormDataConsumer>
-                                            <FormDataConsumer>
-                                                {({ scopedFormData }) => {
-                                                    if (!disabled && !scopedFormData?.productId) {
-                                                        return <></>;
-                                                    }
-                                                    return (
-                                                        <NumberInput
-                                                            source={od(x => x.price)}
-                                                            label={translate(`resources.misc.price`, { smart_count: 1 })}
-                                                            disabled={disabled}
-                                                            defaultValue={scopedFormData.product?.prices?.[0]?.price ?? scopedFormData.product?.defaultPrice}
-                                                        />
-                                                    );
-                                                }}
-                                            </FormDataConsumer>
-                                        </SimpleFormIterator>
-                                    </ArrayInput>
-                                );
-                            }}
-                        </FormDataConsumer>
-                        <TextInput source={o(x => x.notes)} label={translate(`resources.misc.notes`, { smart_count: 2, })} disabled={disabled} />
+                                                    </FormField>
+                                                    <FormDataConsumer>
+                                                        {({ scopedFormData }) => {
+                                                            if (!disabled && !scopedFormData?.productId) {
+                                                                return <></>;
+                                                            }
+                                                            return (
+                                                                <FormField>
+                                                                    <NumberInput
+                                                                        source={od(x => x.quantity)}
+                                                                        label={translate(`resources.misc.quantity`, { smart_count: 1 })}
+                                                                        disabled={disabled}
+                                                                    />
+                                                                </FormField>
+                                                            );
+                                                        }}
+                                                    </FormDataConsumer>
+                                                    <FormDataConsumer>
+                                                        {({ scopedFormData }) => {
+                                                            if (!disabled && !scopedFormData?.productId) {
+                                                                return <></>;
+                                                            }
+                                                            return (
+                                                                <FormField>
+                                                                    <NumberInput
+                                                                        source={od(x => x.price)}
+                                                                        label={translate(`resources.misc.price`, { smart_count: 1 })}
+                                                                        disabled={disabled}
+                                                                        defaultValue={scopedFormData?.product?.prices?.[0]?.price ?? scopedFormData?.product?.defaultPrice}
+                                                                    />
+                                                                </FormField>
+                                                            );
+                                                        }}
+                                                    </FormDataConsumer>
+                                                </SimpleFormIterator>
+                                            </ArrayInput>
+                                        </Grid>
+                                    );
+                                }}
+                            </FormDataConsumer>
+                            <Grid item xs={12}>
+                                <FormField>
+                                    <TextInput source={o(x => x.notes)} label={translate(`resources.misc.notes`, { smart_count: 2, })} disabled={disabled} />
+                                </FormField>
+                            </Grid>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={4}>
                         <BusinessAddressCard />
                     </Grid>
                 </Grid>

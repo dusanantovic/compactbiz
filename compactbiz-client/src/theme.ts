@@ -91,7 +91,133 @@ let muiTheme = createTheme({
                     transition: "none"
                 }
             }
-        }
+        },
+        MuiTextField: {
+            defaultProps: {
+                variant: "outlined" as const,
+                fullWidth: true,
+                margin: "none" as const
+            }
+        },
+        MuiFormControl: {
+            defaultProps: {
+                variant: "outlined" as const,
+                fullWidth: true,
+                margin: "none" as const
+            }
+        },
+        MuiSelect: {
+            defaultProps: {
+                variant: "outlined" as const
+            }
+        },
+        MuiInputBase: {
+            styleOverrides: {
+                input: {
+                    "&[type=number]": {
+                        padding: "16.5px 14px"
+                    }
+                }
+            }
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 8,
+                    backgroundColor: "#ffffff",
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#001f40"
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#001f40",
+                        borderWidth: 2
+                    },
+                    "&.Mui-disabled": {
+                        backgroundColor: "#f1f5f9"
+                    }
+                },
+                notchedOutline: {
+                    borderColor: "rgba(0,0,0,0.18)"
+                }
+            }
+        },
+        MuiFilledInput: {
+            styleOverrides: {
+                root: {
+                    borderRadius: "8px 8px 0 0",
+                    backgroundColor: "#f8fafc",
+                    "&:hover": {
+                        backgroundColor: "#f1f5f9"
+                    },
+                    "&.Mui-focused": {
+                        backgroundColor: "#f1f5f9"
+                    }
+                }
+            }
+        },
+        MuiFormLabel: {
+            styleOverrides: {
+                root: {
+                    color: "#64748b",
+                    "&.Mui-focused": {
+                        color: "#001f40"
+                    }
+                }
+            }
+        },
+        MuiInputLabel: {
+            styleOverrides: {
+                root: {
+                    fontWeight: 500,
+                    "&.Mui-focused": {
+                        color: "#001f40"
+                    }
+                }
+            }
+        },
+        MuiAutocomplete: {
+            styleOverrides: {
+                root: {
+                    width: "100%"
+                },
+                paper: {
+                    borderRadius: 8,
+                    boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)"
+                }
+            }
+        },
+        // React-admin component defaults
+        RaTextInput: {
+            defaultProps: {
+                fullWidth: true,
+                variant: "outlined"
+            }
+        } as any,
+        RaSelectInput: {
+            defaultProps: {
+                fullWidth: true,
+                variant: "outlined"
+            },
+            styleOverrides: {
+                root: {
+                    marginTop: "0 !important",
+                    marginBottom: "0 !important"
+                }
+            }
+        } as any,
+        RaNumberInput: {
+            defaultProps: {
+                fullWidth: true,
+                variant: "outlined",
+                size: "medium"
+            }
+        } as any,
+        RaAutocompleteInput: {
+            defaultProps: {
+                fullWidth: true,
+                variant: "outlined"
+            }
+        } as any
     }
 });
 

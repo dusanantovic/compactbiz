@@ -5,16 +5,20 @@ import { usePageTracking } from "./pageTracking";
 import { BizAppBar } from "./appBar";
 import { BizSidebar } from "./sidebar";
 import { BizMenu } from "./menu";
+import { OrderNotifications } from "../components/OrderNotifications";
 
 const BizLayoutComponent = ({ ...props }: CoreLayoutProps) => {
     usePageTracking();
     return (
-        <Layout
-            {...props}
-            menu={BizMenu}
-            appBar={BizAppBar}
-            sidebar={BizSidebar}
-        />
+        <>
+            <Layout
+                {...props}
+                menu={BizMenu}
+                appBar={BizAppBar}
+                sidebar={BizSidebar}
+            />
+            <OrderNotifications />
+        </>
     );
 };
 

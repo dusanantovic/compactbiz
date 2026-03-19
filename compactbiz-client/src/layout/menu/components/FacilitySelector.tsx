@@ -3,6 +3,7 @@ import { MenuItem, SelectChangeEvent } from "@mui/material";
 import * as React from "react";
 import { FacilitySelectorFormControl, FacilitySelectorSelect, FacilitySelectorOutlinedInput } from "../styledComponents";
 import { ExpandMore } from "@mui/icons-material";
+import { disconnectSocket, connectSocket } from "../../../socket/socketClient";
 
 const FacilitySelectorComponent = () => {
     const [facilities, setFacilities] = React.useState<MiniFacility[]>(() =>
@@ -24,7 +25,11 @@ const FacilitySelectorComponent = () => {
     const handleFacilitySelector = (event: SelectChangeEvent<any>) => {
         const value = event.target.value;
         if (value) {
-            setSelectedFacilityId(typeof value === "string" ? parseInt(value) : value);
+            const id = typeof value === "string" ? parseInt(value) : value;
+            setSelectedFacilityId(id);
+            localStorage.setItem("facilityId", id.toString());
+            disconnectSocket();
+            connectSocket();
         }
     };
 

@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { createServer } from "http";
 import express, { NextFunction, Request, Response } from "express";
 import helmet from "helmet";
 import cors from "cors";
@@ -10,6 +11,7 @@ import { HttpErrorHandler } from "./middlewares";
 import { setContext } from "./context";
 import { authorizationRoleChecker } from "./auth";
 import { requestLogger } from "./requestLogger";
+import { initSocketServer } from "./src/socket/socketServer";
 
 const app = express();
 
@@ -47,7 +49,9 @@ const port = process.env.PORT;
 
 if (port) {
     console.log("Running API...");
-    app.listen(port, async () => {
+    const httpServer = createServer(app);
+    initSocketServer(httpServer);
+    httpServer.listen(port, async () => {
         console.log("Environment:", process.env.ENVIRONMENT);
         await DBConnection.setConnection();
         console.log(`Server is running on port:`, port);

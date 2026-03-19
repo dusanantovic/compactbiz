@@ -47,7 +47,7 @@ const AsideControllerComponent = ({ source, searchPlaceholder, addButtonText, ch
                     </Typography>
                     <FilterLiveSearch
                         source="q"
-                        label={translate("resources.misc.search", { smart_count: 1 })}
+                        label={false}
                         placeholder={searchPlaceholder}
                         fullWidth
                     />

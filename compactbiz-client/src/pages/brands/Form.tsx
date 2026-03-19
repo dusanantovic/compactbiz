@@ -1,7 +1,9 @@
 import { Brand } from "../../../models";
 import * as React from "react";
 import { Create, Edit, TabbedForm, TextInput, useTranslate } from "react-admin";
+import { Grid } from "@mui/material";
 import { typed } from "../../util";
+import { FormField } from "../../components";
 
 const b = typed(Brand);
 
@@ -10,20 +12,26 @@ const BrandForm = ({ ...props }) => {
     return (
         <TabbedForm {...props}>
             <TabbedForm.Tab label={translate(`resources.misc.data`, { smart_count: 1, })}>
-                <TextInput source={b(x => x.name)} label={translate(`resources.misc.name`, { smart_count: 1, })} />
+                <Grid container spacing={2} sx={{ width: "100%" }}>
+                    <Grid item xs={12} sm={6}>
+                        <FormField>
+                            <TextInput source={b(x => x.name)} label={translate(`resources.misc.name`, { smart_count: 1 })} />
+                        </FormField>
+                    </Grid>
+                </Grid>
             </TabbedForm.Tab>
         </TabbedForm>
     );
 };
 
 export const BrandCreate = () => (
-    <Create>
+    <Create redirect="list">
         <BrandForm />
     </Create>
 );
 
 export const BrandEdit = () => (
-    <Edit>
+    <Edit redirect="list">
         <BrandForm />
     </Edit>
 );

@@ -3,7 +3,10 @@
     "allow": [
       "Bash(grep -rn 'query\\(`\\\\|query\\(\"\"\\\\|queryRunner' /d/Job/compactbiz/compactbiz-api/src --include=\"*.ts\" -A 3)",
       "Bash(/tmp/sql_findings.txt:*)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(find /d/Job/compactbiz/compactbiz-client -name *styledComponent* -o -name *styled*)",
+      "Bash(find /d/Job/compactbiz/compactbiz-client/src -name styledComponents* -o -name styled.*)",
+      "Bash(npm install:*)"
     ]
   }
 }

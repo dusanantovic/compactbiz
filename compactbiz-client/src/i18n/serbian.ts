@@ -80,6 +80,9 @@ const customSerbianMessages: TranslationMessages = {
         misc: {
             business: "Biznis |||| Biznisi",
             partner: "Partner |||| Partneri",
+            email: "Email",
+            status: "Status",
+            brand: "Brend |||| Brendovi",
             phone: "Telefon |||| Telefoni",
             verified: "Verifikovan |||| Verifikovani",
             name: "Ime |||| Imena",

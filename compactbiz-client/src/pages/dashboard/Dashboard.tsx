@@ -71,7 +71,7 @@ const formatCurrency = (value: number) =>
 const StatCard = ({ label, value, color = "text.primary" }: { label: string; value: React.ReactNode; color?: string }) => (
     <Card elevation={2} sx={{ height: "100%" }}>
         <CardContent>
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            <Typography variant="subtitle2" sx={{ color: "#64748b" }} gutterBottom>
                 {label}
             </Typography>
             <Typography variant="h5" fontWeight="bold" color={color}>
@@ -224,7 +224,7 @@ export const Dashboard = () => {
                                             {recentOrders.length === 0 ? (
                                                 <TableRow>
                                                     <TableCell colSpan={5} align="center">
-                                                        <Typography variant="body2" color="text.secondary">No orders yet</Typography>
+                                                        <Typography variant="body2" sx={{ color: "#64748b" }}>No orders yet</Typography>
                                                     </TableCell>
                                                 </TableRow>
                                             ) : (
@@ -270,7 +270,7 @@ export const Dashboard = () => {
                                                 {topProducts.length === 0 ? (
                                                     <TableRow>
                                                         <TableCell colSpan={2} align="center">
-                                                            <Typography variant="body2" color="text.secondary">No sales yet</Typography>
+                                                            <Typography variant="body2" sx={{ color: "#64748b" }}>No sales yet</Typography>
                                                         </TableCell>
                                                     </TableRow>
                                                 ) : (
@@ -304,7 +304,7 @@ export const Dashboard = () => {
                                                 {products.lowStock.length === 0 ? (
                                                     <TableRow>
                                                         <TableCell colSpan={2} align="center">
-                                                            <Typography variant="body2" color="text.secondary">All products well stocked</Typography>
+                                                            <Typography variant="body2" sx={{ color: "#64748b" }}>All products well stocked</Typography>
                                                         </TableCell>
                                                     </TableRow>
                                                 ) : (

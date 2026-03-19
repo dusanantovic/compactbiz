@@ -6,6 +6,7 @@ import { BaseController } from "./baseController";
 import { OrderRepository } from "../repositories";
 import { AppCtx, Context } from "../../context";
 import { OrderService } from "../services";
+import { emitOrderUpdate } from "../services/notificationService";
 import { Order } from "../../models";
 
 @Controller()
@@ -41,6 +42,15 @@ export class OrderController extends BaseController {
         result = (await this.orderRepo.browseOne(result.key, {
             relations: ["details", "details.quantities", "details.product", "business"]
         }))!;
+        emitOrderUpdate(company!.id, facilityId!, {
+            orderId: result.id,
+            identity: result.identity,
+            status: result.status,
+            type: result.type,
+            businessName: result.business?.name,
+            triggeredByUserId: user!.id,
+            action: "created"
+        });
         return result;
     }
 
@@ -70,13 +80,22 @@ export class OrderController extends BaseController {
         result = (await this.orderRepo.browseOne(result.key, {
             relations: ["details", "details.quantities", "details.product", "business"]
         }))!;
+        emitOrderUpdate(company!.id, facilityId!, {
+            orderId: result.id,
+            identity: result.identity,
+            status: result.status,
+            type: result.type,
+            businessName: result.business?.name,
+            triggeredByUserId: user!.id,
+            action: "updated"
+        });
         return result;
     }
 
     @Post("/orders/:id/submit")
     @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales])
     public async submitOrder(@Param("id") id: string, @AppCtx() context: Context): Promise<Order> {
-        const { company, facilityId } = context.state;
+        const { company, facilityId, user } = context.state;
         assert(company, ["Missing company"]);
         assert(facilityId, ["Missing facility"]);
         const key = Order.parse(id);
@@ -86,15 +105,25 @@ export class OrderController extends BaseController {
         assert(order, ["Order doesn't exist"]);
         order!.submit();
         await this.orderRepo.save(order!);
-        return (await this.orderRepo.browseOne(key, {
+        const submittedOrder = (await this.orderRepo.browseOne(key, {
             relations: ["details", "details.quantities", "details.product", "business"]
         }))!;
+        emitOrderUpdate(company!.id, facilityId!, {
+            orderId: submittedOrder.id,
+            identity: submittedOrder.identity,
+            status: submittedOrder.status,
+            type: submittedOrder.type,
+            businessName: submittedOrder.business?.name,
+            triggeredByUserId: user!.id,
+            action: "statusChanged"
+        });
+        return submittedOrder;
     }
 
     @Post("/orders/:id/start")
     @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales])
     public async startOrder(@Param("id") id: string, @AppCtx() context: Context): Promise<Order> {
-        const { company, facilityId } = context.state;
+        const { company, facilityId, user } = context.state;
         assert(company, ["Missing company"]);
         assert(facilityId, ["Missing facility"]);
         const key = Order.parse(id);
@@ -104,9 +133,19 @@ export class OrderController extends BaseController {
         assert(order, ["Order doesn't exist"]);
         order!.start();
         await this.orderRepo.save(order!);
-        return (await this.orderRepo.browseOne(key, {
+        const startedOrder = (await this.orderRepo.browseOne(key, {
             relations: ["details", "details.quantities", "details.product", "business"]
         }))!;
+        emitOrderUpdate(company!.id, facilityId!, {
+            orderId: startedOrder.id,
+            identity: startedOrder.identity,
+            status: startedOrder.status,
+            type: startedOrder.type,
+            businessName: startedOrder.business?.name,
+            triggeredByUserId: user!.id,
+            action: "statusChanged"
+        });
+        return startedOrder;
     }
 
     @Post("/orders/:id/complete")
@@ -123,15 +162,25 @@ export class OrderController extends BaseController {
         assert(order, ["Order doesn't exist"]);
         order!.complete(user!.id);
         await this.orderRepo.save(order!);
-        return (await this.orderRepo.browseOne(key, {
+        const completedOrder = (await this.orderRepo.browseOne(key, {
             relations: ["details", "details.quantities", "details.product", "business"]
         }))!;
+        emitOrderUpdate(company!.id, facilityId!, {
+            orderId: completedOrder.id,
+            identity: completedOrder.identity,
+            status: completedOrder.status,
+            type: completedOrder.type,
+            businessName: completedOrder.business?.name,
+            triggeredByUserId: user!.id,
+            action: "statusChanged"
+        });
+        return completedOrder;
     }
 
     @Post("/orders/:id/deliver")
     @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales, Role.Warehouseman, Role.Cashier])
     public async deliverOrder(@Param("id") id: string, @AppCtx() context: Context): Promise<Order> {
-        const { company, facilityId } = context.state;
+        const { company, facilityId, user } = context.state;
         assert(company, ["Missing company"]);
         assert(facilityId, ["Missing facility"]);
         const key = Order.parse(id);
@@ -141,9 +190,19 @@ export class OrderController extends BaseController {
         assert(order, ["Order doesn't exist"]);
         order!.deliver();
         await this.orderRepo.save(order!);
-        return (await this.orderRepo.browseOne(key, {
+        const deliveredOrder = (await this.orderRepo.browseOne(key, {
             relations: ["details", "details.quantities", "details.product", "business"]
         }))!;
+        emitOrderUpdate(company!.id, facilityId!, {
+            orderId: deliveredOrder.id,
+            identity: deliveredOrder.identity,
+            status: deliveredOrder.status,
+            type: deliveredOrder.type,
+            businessName: deliveredOrder.business?.name,
+            triggeredByUserId: user!.id,
+            action: "statusChanged"
+        });
+        return deliveredOrder;
     }
 
     @Get("/orders")
