@@ -129,7 +129,7 @@ export class OrderController extends BaseController {
     }
 
     @Post("/orders/:id/deliver")
-    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales, Role.Warehouseman])
+    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales, Role.Warehouseman, Role.Cashier])
     public async deliverOrder(@Param("id") id: string, @AppCtx() context: Context): Promise<Order> {
         const { company, facilityId } = context.state;
         assert(company, ["Missing company"]);
@@ -147,7 +147,7 @@ export class OrderController extends BaseController {
     }
 
     @Get("/orders")
-    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Warehouseman, Role.Sales, Role.Driver])
+    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Warehouseman, Role.Cashier, Role.Sales, Role.Driver])
     public async getOrders(@AppCtx() context: Context, @Res() response: Response): Promise<Order[]> {
         const { company, user } = context.state;
         assert(company, ["Missing company"]);
@@ -165,7 +165,7 @@ export class OrderController extends BaseController {
     }
 
     @Get("/orders/:identity([-0-9]+)")
-    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales, Role.Warehouseman, Role.Driver])
+    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales, Role.Warehouseman, Role.Cashier, Role.Driver])
     public async getOrderByIdentity(@Param("identity") identity: string, @AppCtx() context: Context): Promise<Order> {
         const { company } = context.state;
         assert(company, ["Missing company"]);

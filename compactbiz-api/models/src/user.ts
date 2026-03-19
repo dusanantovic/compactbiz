@@ -158,7 +158,7 @@ export class User extends BaseModel<UserKey> implements UserKey {
             const cryptoGenerator = new CryptoGenerator();
             const isValidTempPin = cryptoGenerator.compareRawWithHash(tempPin, this.tempPin);
             if (!isValidTempPin) {
-                throw new InvalidCredentials();
+                throw new InvalidPin();
             }
             if (this.employeedById && password) {
                 this.password = cryptoGenerator.hash(password);
@@ -317,6 +317,12 @@ export class InvalidCredentials extends BadRequestError {
     constructor() {
         super(getErrorMessages("Invalid credentials"));
         this.name = "InvalidCredentials";
+    }
+}
+export class InvalidPin extends BadRequestError {
+    constructor() {
+        super(getErrorMessages("Invalid pin"));
+        this.name = "InvalidPin";
     }
 }
 

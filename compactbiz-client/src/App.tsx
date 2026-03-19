@@ -76,7 +76,7 @@ const App = () => {
                             options={{
                                 key: 2,
                                 label: "Products",
-                                visible: permissions !== Role.Warehouseman && permissions !== Role.Driver
+                                visible: permissions !== Role.Warehouseman && permissions !== Role.Cashier && permissions !== Role.Driver
                             }}
                         />
                         <Resource
@@ -98,7 +98,7 @@ const App = () => {
                             options={{
                                 key: 4,
                                 label: "Brands",
-                                visible: permissions !== Role.Warehouseman && permissions !== Role.Driver
+                                visible: permissions !== Role.Warehouseman && permissions !== Role.Cashier && permissions !== Role.Driver
                             }}
                         />
                         <Resource
@@ -120,7 +120,7 @@ const App = () => {
                             options={{
                                 key: 6,
                                 label: "Businesses",
-                                visible: permissions !== Role.Warehouseman && permissions !== Role.Driver
+                                visible: permissions !== Role.Warehouseman && permissions !== Role.Cashier && permissions !== Role.Driver
                             }}
                         />
                         <Resource

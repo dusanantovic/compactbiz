@@ -40,7 +40,7 @@ export class BusinessController extends BaseController {
     }
 
     @Get("/businesses")
-    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales, Role.Warehouseman, Role.Driver])
+    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales, Role.Warehouseman, Role.Cashier, Role.Driver])
     public async getBusiness(@AppCtx() context: Context, @Res() response: Response): Promise<Business[]> {
         const { company } = context.state;
         assert(company, ["Missing company"]);

@@ -8,7 +8,7 @@ import { AppCtx, Context } from "../../context";
 export class DashboardController extends BaseController {
 
     @Get("/dashboard")
-    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Warehouseman, Role.Sales, Role.Driver])
+    @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Warehouseman, Role.Cashier, Role.Sales, Role.Driver])
     public async getDashboard(@AppCtx() context: Context): Promise<object> {
         const { company, facilityId, user } = context.state;
         assert(company, ["Missing company"]);
@@ -23,17 +23,7 @@ export class DashboardController extends BaseController {
                 .filter((r: any) => r.status === status)
                 .reduce((sum: number, r: any) => sum + parseInt(r.count || "0", 10), 0);
 
-        if (user?.role === Role.Driver) {
-            return {
-                orders: {
-                    delivery: countByStatus(OrderStatus.Delivery),
-                    completed: countByStatus(OrderStatus.Complete),
-                    canceled: countByStatus(OrderStatus.Canceled),
-                },
-            };
-        }
-
-        if (user?.role === Role.Warehouseman) {
+        if (user?.role === Role.Warehouseman || user?.role === Role.Driver || user?.role === Role.Cashier) {
             return {
                 orders: {
                     pending: countByStatus(OrderStatus.Pending),
