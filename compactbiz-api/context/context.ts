@@ -104,7 +104,7 @@ const setContextCompanyAndFacilityId = async (request: Request, next: NextFuncti
 const getCurrentUserFromToken = async (request: Request, userRepo: UserRepository): Promise<User> => {
     if (request.headers.authorization) {
         try {
-            const idToken = request.headers.authorization.replace("Bearer ", "");
+            const idToken = request.headers.authorization.replace("Bearer ", "").replace("bearer ", "");
             if (idToken) {
                 User.verifyIdToken(idToken);
                 const idTokenData = (jwtDecode(idToken) as unknown) as IdTokenData;

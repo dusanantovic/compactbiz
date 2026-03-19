@@ -13,8 +13,8 @@ export const authorizationRoleChecker = (action: Action, roles: number[]): boole
             const userRoleMatchesRequiredRole = isAdmin || roles.some(role => role === user.role);
             if (userRoleMatchesRequiredRole) {
                 const existInRoleWithoutFacilityId = isAdmin || rolesWithoutFacility.some(role => role === user.role);
-                const urlParams = new URLSearchParams(action.request.url.split('?')[1] || '');
-                const facilityId: number = parseInt(urlParams.get('facilityId') || '');
+                const urlParams = new URLSearchParams(action.request.url.split("?")[1] || "");
+                const facilityId: number = parseInt(urlParams.get("facilityId") || "");
                 if (existInRoleWithoutFacilityId || facilityId) {
                     let useHasAccess = existInRoleWithoutFacilityId;
                     if (!existInRoleWithoutFacilityId && company) {
