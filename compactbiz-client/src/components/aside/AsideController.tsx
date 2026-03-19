@@ -42,7 +42,7 @@ const AsideControllerComponent = ({ source, searchPlaceholder, addButtonText, ch
             )}
             <AsideControllerPanel open={open}>
                 <AsideControllerInner>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 700, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.06em", color: "text.secondary" }}>
+                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 700, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.06em", color: "text.primary" }}>
                         {translate("resources.misc.filters", { smart_count: 1 })}
                     </Typography>
                     <FilterLiveSearch

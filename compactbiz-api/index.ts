@@ -45,6 +45,10 @@ useExpressServer(app, {
     authorizationChecker: authorizationRoleChecker
 });
 
+app.use((req: Request, res: Response) => {
+    res.status(404).json({ message: `Cannot ${req.method} ${req.path}` });
+});
+
 const port = process.env.PORT;
 
 if (port) {

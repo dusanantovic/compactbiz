@@ -10,9 +10,10 @@ export class HttpErrorHandler implements ExpressErrorMiddlewareInterface {
 
     public error(error: any, request: Request, response: Response, next: NextFunction): void {
         if (error instanceof HttpError) {
-            response.status(error.httpCode).json(error);
+            response.status(error.httpCode).json({ message: error.message });
+        } else {
+            response.status(500).json({ message: "Internal server error" });
         }
-        next(error);
     }
 
 }
