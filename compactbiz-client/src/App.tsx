@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import React from "react";
-import { Admin, Authenticated, CustomRoutes, Resource } from "react-admin";
+import { Admin, Authenticated, CustomRoutes, Notification, Resource } from "react-admin";
 import { HashRouter, Route } from "react-router-dom";
 import polyglotI18nProvider from "ra-i18n-polyglot";
 import { httpDataProvider } from "./httpDataProvider";
@@ -23,6 +23,7 @@ import { Dashboard } from "./pages/dashboard/Dashboard";
 import { Role } from "models/enums";
 
 const dataProvider = httpDataProvider();
+const BizNotification = () => <Notification autoHideDuration={10000} />;
 
 const i18nProvider = polyglotI18nProvider(
     locale => {
@@ -50,6 +51,7 @@ const App = () => {
                 theme={theme}
                 i18nProvider={i18nProvider}
                 dashboard={Dashboard}
+                notification={BizNotification}
             >
                 {(permissions: Role | null) => (
                     <>
