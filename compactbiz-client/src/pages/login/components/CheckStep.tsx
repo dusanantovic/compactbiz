@@ -64,6 +64,7 @@ export const CheckStep = ({ email, handleStep, changeEmail }: CheckStepProps) =>
                 type="email"
                 placeholder="Please enter your email"
                 value={email}
+                autoComplete={"username"}
                 onChange={changeEmail}
                 onKeyUp={(e) => handleKeyUp(e)}
             />
