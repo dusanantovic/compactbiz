@@ -2,7 +2,7 @@ import * as React from "react";
 import { MenuProps, ResourceDefinition, ResourceDefinitions, useResourceDefinitions, useTranslate } from "react-admin";
 import { MenuContainer, MenuListItemButton, MenuListItemSubButton, MenuListItemSubText, MenuListItemText, MenuGroupHeader, MenuGroupLabel } from "./styledComponents";
 import { order } from "../../../models/src/util";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Collapse, List, ListItemIcon } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { FacilitySelector } from "./components/FacilitySelector";
@@ -55,7 +55,6 @@ const ResourceIcon = ({ name }: { name: string }) => {
 export const BizMenu = ({ ...props }: MenuProps) => {
     const [menuResources, setMenuResources] = React.useState([] as MenuResource[]);
     const location = useLocation();
-    const nav = useNavigate();
     const resources: ResourceDefinitions<ResourceOptions> = useResourceDefinitions();
 
     React.useEffect(() => {
@@ -126,17 +125,14 @@ export const BizMenu = ({ ...props }: MenuProps) => {
         setMenuResources(newMenuResources);
     };
 
-    const handleButtonClick = (resourceName: string) => {
-        nav(`/${resourceName}`);
-    };
-
     const translate = useTranslate();
 
     return (
         <MenuContainer>
             <MenuListItemButton
+                component={Link}
+                to="/"
                 selected={location.pathname === "/"}
-                onClick={() => nav("/")}
             >
                 <ListItemIcon><DashboardIcon /></ListItemIcon>
                 <MenuListItemText primary={translate("resources.dashboard.name", { smart_count: 1 })} />
@@ -162,8 +158,9 @@ export const BizMenu = ({ ...props }: MenuProps) => {
                                         return (
                                             <MenuListItemSubButton
                                                 key={`nested-${j}`}
+                                                component={Link}
+                                                to={`/${resource.name}`}
                                                 selected={selected}
-                                                onClick={() => handleButtonClick(resource.name)}
                                             >
                                                 <ListItemIcon><ResourceIcon name={resource.name} /></ListItemIcon>
                                                 <MenuListItemSubText primary={translate(`resources.${resource.options!.label.toLowerCase()}.name`, { smart_count: 2 })} />
@@ -180,8 +177,9 @@ export const BizMenu = ({ ...props }: MenuProps) => {
                 return (
                     <MenuListItemButton
                         key={i}
+                        component={Link}
+                        to={`/${resource.name}`}
                         selected={selected}
-                        onClick={() => handleButtonClick(resource.name)}
                     >
                         <ListItemIcon><ResourceIcon name={resource.name} /></ListItemIcon>
                         <MenuListItemText primary={translate(`resources.${resource.options!.label.toLowerCase()}.name`, { smart_count: 2 })} />
