@@ -3,6 +3,7 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 export class UpdatePackageQuantityBalance1742464800001 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`DROP TRIGGER package_adjustment_trigger on "compactbiz"."package_adjustment"`);
         await queryRunner.query(`
             CREATE OR REPLACE FUNCTION compactbiz.update_package_quantity_balance(company_id integer, facility_id integer, package_id integer, location_id integer)
             RETURNS void
@@ -19,7 +20,7 @@ export class UpdatePackageQuantityBalance1742464800001 implements MigrationInter
                             pq."locationId",
                             pq."packageId",
                             COALESCE(SUM(
-                                case when o.id is null or (o.type = 'Purchase' AND o.type = 'Complete') then
+                                case when o.id is null or (o.type = 'Purchase' AND o.status = 'Complete') then
                                     pa.delta
                                 else
                                     0
@@ -102,6 +103,11 @@ export class UpdatePackageQuantityBalance1742464800001 implements MigrationInter
                         p.id = x."packageId";
                 END;
             $function$
+        `);
+        await queryRunner.query(`
+            CREATE TRIGGER package_adjustment_trigger
+        AFTER INSERT OR UPDATE OR DELETE ON "compactbiz"."package_adjustment"
+        FOR EACH ROW EXECUTE PROCEDURE compactbiz.package_adjustment_trigger_fn()
         `);
     }
 

@@ -42,6 +42,6 @@ export const packageAdjustmentTriggerFn = `
 
 export const packageAdjustmentTrigger = `
     CREATE TRIGGER package_adjustment_trigger
-    AFTER INSERT OR DELETE ON "compactbiz"."package_adjustment"
+    AFTER INSERT OR UPDATE OR DELETE ON "compactbiz"."package_adjustment"
     FOR EACH ROW EXECUTE PROCEDURE compactbiz.package_adjustment_trigger_fn()
 `;

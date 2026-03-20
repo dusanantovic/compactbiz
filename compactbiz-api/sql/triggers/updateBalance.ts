@@ -14,7 +14,7 @@ export const updatePackageQuantityBalance = `
                     pq."locationId",
                     pq."packageId",
                     COALESCE(SUM(
-                        case when o.id is null or (o.type = 'Purchase' AND o.type = 'Complete') then
+                        case when o.id is null or (o.type = 'Purchase' AND o.status = 'Complete') then
                             pa.delta
                         else
                             0
