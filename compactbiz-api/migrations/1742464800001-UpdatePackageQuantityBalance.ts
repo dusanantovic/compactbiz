@@ -19,7 +19,7 @@ export class UpdatePackageQuantityBalance1742464800001 implements MigrationInter
                             pq."locationId",
                             pq."packageId",
                             COALESCE(SUM(
-                                case when o.type = 'Purchase' or o.id is null then
+                                case when o.id is null or (o.type = 'Purchase' AND o.type = 'Complete') then
                                     pa.delta
                                 else
                                     0
