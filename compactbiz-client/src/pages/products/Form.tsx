@@ -50,11 +50,6 @@ const ProductForm = ({ ...props }) => {
                 <Grid container spacing={2} sx={{ width: "100%" }}>
                     <Grid item xs={12} sm={6}>
                         <FormField>
-                            <TextInput source={p(x => x.name)} label={translate(`resources.misc.name`, { smart_count: 1 })} />
-                        </FormField>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormField>
                             <AsyncSelectInput
                                 resource="brands"
                                 source={p(x => x.brandId)}
@@ -62,12 +57,17 @@ const ProductForm = ({ ...props }) => {
                             />
                         </FormField>
                     </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormField>
+                            <TextInput source={p(x => x.name)} label={translate(`resources.misc.name`, { smart_count: 1 })} />
+                        </FormField>
+                    </Grid>
                 </Grid>
             </TabbedForm.Tab>
             {location.pathname !== "/products/create" &&
                 (
                     <TabbedForm.Tab label={translate(`resources.misc.price`, { smart_count: 1, })}>
-                        <ArrayField source="prices" sx={{ width: "100%" }}>
+                        <ArrayField source="prices">
                             <Datagrid bulkActionButtons={false} sx={{ width: "100%" }}>
                                 <TextField source={pp(x => x.id)} label="#ID" />
                                 <TextField source="business.name" label={translate(`resources.misc.business`, { smart_count: 1, })} />
