@@ -42,27 +42,15 @@ export class OrderController extends BaseController {
         result = (await this.orderRepo.browseOne(result.key, {
             relations: ["details", "details.quantities", "details.product", "business"]
         }))!;
-        if (result.type === OrderType.Purchase) {
-            emitOrderUpdate(company!.id, facilityId!, {
-                orderId: result.id,
-                identity: result.identity,
-                status: result.status,
-                type: result.type,
-                businessName: result.business?.name,
-                triggeredByUserId: user!.id,
-                action: OrderAction.PurchaseCreated
-            });
-        } else {
-            emitOrderUpdate(company!.id, facilityId!, {
-                orderId: result.id,
-                identity: result.identity,
-                status: result.status,
-                type: result.type,
-                businessName: result.business?.name,
-                triggeredByUserId: user!.id,
-                action: OrderAction.SellCreated
-            });
-        }
+        emitOrderUpdate(company!.id, facilityId!, {
+            orderId: result.id,
+            identity: result.identity,
+            status: result.status,
+            type: result.type,
+            businessName: result.business?.name,
+            triggeredByUserId: user!.id,
+            action: result.type === OrderType.Purchase ? OrderAction.PurchaseCreated : OrderAction.SellCreated
+        });
         return result;
     }
 
@@ -108,14 +96,27 @@ export class OrderController extends BaseController {
     @Authorized([Role.Owner, Role.Manager, Role.InventoryManager, Role.Sales])
     public async submitOrder(@Param("id") id: string, @AppCtx() context: Context): Promise<Order> {
         const { company, facilityId, user } = context.state;
-        assert(company, ["Missing company"]);
-        assert(facilityId, ["Missing facility"]);
+        const errors: string[] = [];
+        if (!company) {
+            errors.push("Missing company");
+        }
+        if (!facilityId) {
+            errors.push("Missing facility");
+        }
+        if (!user) {
+            errors.push("Missing user");
+        }
+        assert(errors.length === 0, errors);
         const key = Order.parse(id);
         key.companyId = company!.id;
         key.facilityId = facilityId!;
         const order = await this.orderRepo.browseOne(key, {});
         assert(order, ["Order doesn't exist"]);
-        order!.submit();
+        if (order.type === OrderType.Purchase) {
+            order.complete(user!.id);
+        } else {
+            order.submit();
+        }
         await this.orderRepo.save(order!);
         const submittedOrder = (await this.orderRepo.browseOne(key, {
             relations: ["details", "details.quantities", "details.product", "business"]

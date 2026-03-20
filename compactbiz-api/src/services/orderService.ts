@@ -30,7 +30,7 @@ export class OrderService {
         const packageService = new PackageService(this.manager);
         const productPriceService = new ProductPriceService(this.manager);
         const newOrder = Order.create(companyId, facilityId, orderBody.businessId, orderBody.type, orderBody.notes);
-        let savedOrder = await this.orderRepo.save(newOrder);
+        const savedOrder = await this.orderRepo.save(newOrder);
         const orderDetails: OrderDetail[] = [];
         orderBody.details!.forEach(od => {
             const orderDetail = OrderDetail.create(companyId, facilityId, savedOrder.businessId, savedOrder.id, od.productId, od.price);
@@ -43,8 +43,6 @@ export class OrderService {
                 productId: od.productId,
                 quantity: od.quantity
             })));
-            savedOrder.complete(userId);
-            savedOrder = await this.orderRepo.save(savedOrder);
         } else {
             await packageService.createSellOrder(companyId, facilityId, userId, defaultLocation.id, savedOrder.businessId, savedOrder.id, orderDetails.map(od => ({
                 productId: od.productId,
