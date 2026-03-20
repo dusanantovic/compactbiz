@@ -12,28 +12,31 @@ export class ProductRepository extends BaseRepository<Product> {
         super(target, manager);
     }
 
-    public async browse(companyId: number, facilityId: number, options: FindManyOptionsStrict<Product>): Promise<[Product[], number]> {
+    public async browse(companyId: number, options: FindManyOptionsStrict<Product>, facilityId?: number): Promise<[Product[], number]> {
         let qb = this.browseQb(companyId, options);
-        qb.addSelect(`(
-            SELECT
-                COALESCE(SUM(pkg."quantity"), 0)
-            FROM
-                compactbiz."package" pkg
-            WHERE
-                pkg."companyId" = "${qb.alias}"."companyId" AND
-                ${facilityId ? `pkg."facilityId" = ${facilityId} AND` : ""}
-                pkg."productId" = "${qb.alias}"."id"
-        ) as "quantity"`);
-         qb.addSelect(`(
-            SELECT
-                COALESCE(SUM(pkg."reserved"), 0)
-            FROM
-                compactbiz."package" pkg
-            WHERE
-                pkg."companyId" = "${qb.alias}"."companyId" AND
-                ${facilityId ? `pkg."facilityId" = ${facilityId} AND` : ""}
-                pkg."productId" = "${qb.alias}"."id"
-        ) as "reserved"`);
+        if (facilityId) {
+            qb.addSelect(`(
+                SELECT
+                    COALESCE(SUM(pkg."quantity"), 0)
+                FROM
+                    compactbiz."package" pkg
+                WHERE
+                    pkg."companyId" = "${qb.alias}"."companyId" AND
+                    pkg."facilityId" = :facilityId AND
+                    pkg."productId" = "${qb.alias}"."id"
+            ) as "quantity"`);
+            qb.addSelect(`(
+                SELECT
+                    COALESCE(SUM(pkg."reserved"), 0)
+                FROM
+                    compactbiz."package" pkg
+                WHERE
+                    pkg."companyId" = "${qb.alias}"."companyId" AND
+                    pkg."facilityId" = :facilityId AND
+                    pkg."productId" = "${qb.alias}"."id"
+            ) as "reserved"`);
+            qb.setParameter("facilityId", facilityId);
+        }
         if (options.q) {
             qb = this.search(qb, options.q);
         }

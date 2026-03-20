@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { ArrayField, Create, Datagrid, Edit, FunctionField, ListContextProvider, NumberInput, SelectInput, TabbedForm, TextField, TextInput, useList, useRecordContext, useTranslate } from "react-admin";
+import { ArrayField, Create, Datagrid, Edit, FunctionField, ListContextProvider, TabbedForm, TextField, TextInput, useList, useRecordContext, useTranslate } from "react-admin";
 import { Grid } from "@mui/material";
 import { typed } from "../../util";
 import { AsyncSelectInput, FormField } from "../../components";
@@ -19,7 +19,7 @@ const HistoryTab = () => {
 
     useEffect(() => {
         if (!record?.id) return;
-        http(buildHttpUrl(`products/${record.id}/history`))
+        void http(buildHttpUrl(`products/${record.id}/history`))
             .then(res => setHistory(res.json));
     }, [record?.id]);
 
@@ -55,34 +55,11 @@ const ProductForm = ({ ...props }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <FormField>
-                            <SelectInput
-                                source={p(x => x.type)}
-                                label={translate(`resources.misc.type`, { smart_count: 1 })}
-                                choices={[
-                                    { id: "Purchase", name: translate(`resources.misc.purchase`, { smart_count: 1 }) },
-                                    { id: "Sell", name: translate(`resources.misc.sell`, { smart_count: 1 }) },
-                                    { id: "Both", name: translate(`resources.misc.both`, { smart_count: 1 }) }
-                                ]}
-                            />
-                        </FormField>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormField>
                             <AsyncSelectInput
                                 resource="brands"
                                 source={p(x => x.brandId)}
                                 label={translate(`resources.misc.brand`, { smart_count: 1 })}
                             />
-                        </FormField>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FormField>
-                            <NumberInput source={p(x => x.defaultPrice)} label={translate(`resources.misc.price`, { smart_count: 1 })} />
-                        </FormField>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FormField>
-                            <NumberInput source={p(x => x.quantity)} label={translate(`resources.misc.quantity`, { smart_count: 1 })} />
                         </FormField>
                     </Grid>
                 </Grid>

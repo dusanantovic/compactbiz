@@ -1,11 +1,11 @@
 import { Check, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { Type } from "class-transformer";
 import { BaseModel } from "./baseModel";
-import { assert, validator } from "./util";
+import { validator } from "./util";
 import { Brand } from "./brand";
 import { Package } from "./package";
 import { OrderDetail } from "./orderDetail";
-import { MeasurementUnit, ProductType } from "../enums";
+import { MeasurementUnit } from "../enums";
 import { ProductPrice } from "./productPrice";
 
 @Entity()
@@ -33,13 +33,6 @@ export class Product extends BaseModel<ProductKey> implements ProductKey {
 
     @Column({ default: true })
     isActive: boolean;
-
-    @Column({ type: "decimal", nullable: false })
-    @Check("product_default_price_>=_0", `"defaultPrice" >= 0`)
-    defaultPrice: number;
-
-    @Column({ type: "enum", enum: ProductType, nullable: false })
-    type: ProductType;
 
     @Column({ type: "enum", enum: MeasurementUnit, default: MeasurementUnit.Piece })
     unit: MeasurementUnit;
@@ -89,14 +82,11 @@ export class Product extends BaseModel<ProductKey> implements ProductKey {
     }
 
     public static create(companyId: number, productBody: Partial<Product>): Product {
-        Product.validation(productBody);
         const product = new Product();
         product.companyId = companyId;
         product.name = productBody.name ? (productBody.name.trim() || null) : null as any;
         product.brandId = productBody.brandId || null as any;
-        product.defaultPrice = productBody.defaultPrice || null as any;
         product.categoryId = productBody.categoryId || null as any;
-        product.type = productBody.type || null as any;
         if (productBody.unit) {
             product.unit = productBody.unit;
         }
@@ -109,12 +99,9 @@ export class Product extends BaseModel<ProductKey> implements ProductKey {
     }
 
     public update(productBody: Partial<Product>): void {
-        Product.validation(productBody);
         this.name = productBody.name ? (productBody.name.trim() || null) : null as any;
         this.brandId = productBody.brandId || null as any;
-        this.defaultPrice = productBody.defaultPrice || null as any;
         this.categoryId = productBody.categoryId || null as any;
-        this.type = productBody.type || null as any;
         if (productBody.unit) {
             this.unit = productBody.unit;
         }
@@ -123,10 +110,6 @@ export class Product extends BaseModel<ProductKey> implements ProductKey {
         }
         this.isActive = typeof productBody.isActive === "boolean" ? productBody.isActive : true;
         validator(this);
-    }
-
-    private static validation(productBody: Partial<Product>): void {
-        assert(productBody.defaultPrice && productBody.defaultPrice >= 0, ["Product price must be greater then 0"]);
     }
 
 }

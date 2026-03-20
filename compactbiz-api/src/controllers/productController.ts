@@ -35,7 +35,7 @@ export class ProductController extends BaseController {
         assert(errors.length === 0, errors);
         const result = await this.connection.transaction(async manager => {
             const productService = new ProductService(manager);
-            const savedProduct = await productService.create(company!.id, facilityId!, user!.id, productBody);
+            const savedProduct = await productService.create(company!.id, productBody);
             return savedProduct;
         });
         return result;
@@ -63,7 +63,7 @@ export class ProductController extends BaseController {
         assert(facilityId, ["Missing facilityId"]);
         const options = this.extractQuery(context);
         options.relations = ["brand"];
-        const [products, count] = await this.productRepo.browse(company.id, facilityId, options);
+        const [products, count] = await this.productRepo.browse(company.id, options, facilityId);
         response.set("content-range", count.toString());
         return products;
     }
