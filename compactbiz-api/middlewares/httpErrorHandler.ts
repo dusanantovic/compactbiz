@@ -14,6 +14,7 @@ export class HttpErrorHandler implements ExpressErrorMiddlewareInterface {
         } else {
             response.status(500).json({ message: "Internal server error" });
         }
+        next();
     }
 
 }

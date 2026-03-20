@@ -1,20 +1,15 @@
 import { useEffect, useRef } from "react";
 import { connectSocket, disconnectSocket } from "../socket/socketClient";
-import { OrderStatus, OrderType } from "models/enums";
+import { OrderUpdatePayload } from "models/interfaces";
 
-export type OrderAction = "created" | "updated" | "statusChanged";
-
-export interface OrderNotification {
-    orderId: number;
-    identity: string;
-    status: OrderStatus;
-    type: OrderType;
-    businessName?: string;
-    triggeredByUserId: number;
-    action: OrderAction;
+export enum OrderAction {
+    PurchaseCreated = "PurchaseCreated",
+    SellCreated = "SellCreated",
+    Updated = "Updated",
+    StatusChanged = "StatusChanged"
 }
 
-export const useOrderNotifications = (onNotification: (n: OrderNotification) => void): void => {
+export const useOrderNotifications = (onNotification: (n: OrderUpdatePayload) => void): void => {
     const callbackRef = useRef(onNotification);
     callbackRef.current = onNotification;
 
@@ -28,7 +23,7 @@ export const useOrderNotifications = (onNotification: (n: OrderNotification) => 
 
         const socket = connectSocket();
 
-        const handler = (notification: OrderNotification) => {
+        const handler = (notification: OrderUpdatePayload) => {
             callbackRef.current(notification);
         };
 

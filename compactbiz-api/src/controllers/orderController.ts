@@ -1,4 +1,4 @@
-import { OrderStatus, Role } from "../../models/enums";
+import { OrderAction, OrderStatus, OrderType, Role } from "../../models/enums";
 import { assert } from "../../models/src/util";
 import { Response } from "express";
 import { Authorized, Body, Controller, Get, Param, Post, Put, Res } from "routing-controllers";
@@ -42,15 +42,27 @@ export class OrderController extends BaseController {
         result = (await this.orderRepo.browseOne(result.key, {
             relations: ["details", "details.quantities", "details.product", "business"]
         }))!;
-        emitOrderUpdate(company!.id, facilityId!, {
-            orderId: result.id,
-            identity: result.identity,
-            status: result.status,
-            type: result.type,
-            businessName: result.business?.name,
-            triggeredByUserId: user!.id,
-            action: "created"
-        });
+        if (result.type === OrderType.Purchase) {
+            emitOrderUpdate(company!.id, facilityId!, {
+                orderId: result.id,
+                identity: result.identity,
+                status: result.status,
+                type: result.type,
+                businessName: result.business?.name,
+                triggeredByUserId: user!.id,
+                action: OrderAction.PurchaseCreated
+            });
+        } else {
+            emitOrderUpdate(company!.id, facilityId!, {
+                orderId: result.id,
+                identity: result.identity,
+                status: result.status,
+                type: result.type,
+                businessName: result.business?.name,
+                triggeredByUserId: user!.id,
+                action: OrderAction.SellCreated
+            });
+        }
         return result;
     }
 
@@ -87,7 +99,7 @@ export class OrderController extends BaseController {
             type: result.type,
             businessName: result.business?.name,
             triggeredByUserId: user!.id,
-            action: "updated"
+            action: OrderAction.Updated
         });
         return result;
     }
@@ -115,7 +127,7 @@ export class OrderController extends BaseController {
             type: submittedOrder.type,
             businessName: submittedOrder.business?.name,
             triggeredByUserId: user!.id,
-            action: "statusChanged"
+            action: OrderAction.StatusChanged
         });
         return submittedOrder;
     }
@@ -143,7 +155,7 @@ export class OrderController extends BaseController {
             type: startedOrder.type,
             businessName: startedOrder.business?.name,
             triggeredByUserId: user!.id,
-            action: "statusChanged"
+            action: OrderAction.StatusChanged
         });
         return startedOrder;
     }
@@ -172,7 +184,7 @@ export class OrderController extends BaseController {
             type: completedOrder.type,
             businessName: completedOrder.business?.name,
             triggeredByUserId: user!.id,
-            action: "statusChanged"
+            action: OrderAction.StatusChanged
         });
         return completedOrder;
     }
@@ -200,7 +212,7 @@ export class OrderController extends BaseController {
             type: deliveredOrder.type,
             businessName: deliveredOrder.business?.name,
             triggeredByUserId: user!.id,
-            action: "statusChanged"
+            action: OrderAction.StatusChanged
         });
         return deliveredOrder;
     }

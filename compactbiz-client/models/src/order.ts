@@ -1,6 +1,6 @@
 import { Check, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Type } from "class-transformer";
-import { OrderStatus, OrderType } from "../enums";
+import { OrderAction, OrderStatus, OrderType } from "../enums";
 import { BaseModel } from "./baseModel";
 import { assert, validator } from "./util";
 import { Address } from "./address";
@@ -155,7 +155,11 @@ export class Order extends BaseModel<OrderKey> implements OrderKey {
     }
 
     public complete(userId: number): void {
-        assert(Order.activeStatuses().includes(this.status), [`Order in status "${this.status}" cannot be completed`]);
+        if (this.type === OrderType.Purchase) {
+            assert(this.status === OrderStatus.Temporary, [`Order in status "${this.status}" cannot be completed`]);
+        } else {
+            assert(Order.activeStatuses().includes(this.status), [`Order in status "${this.status}" cannot be completed`]);
+        }
         this.completed = new Date();
         this.completedById = userId;
         this.status = OrderStatus.Complete;
@@ -183,4 +187,14 @@ export interface OrderKey {
     facilityId: number;
     businessId: number;
     id: number;
+}
+
+export interface OrderUpdatePayload {
+    orderId: number;
+    identity: string;
+    status: OrderStatus;
+    type: OrderType;
+    businessName?: string;
+    triggeredByUserId: number;
+    action: OrderAction;
 }

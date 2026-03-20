@@ -4,7 +4,7 @@ export const updatePackageQuantityBalance = `
     LANGUAGE plpgsql
     AS $function$
         BEGIN
-            UPDATE package_quantity pq SET
+            UPDATE compactbiz.package_quantity pq SET
                 quantity = x.quantity,
                 reserved = x.reserved
             FROM (
@@ -13,15 +13,38 @@ export const updatePackageQuantityBalance = `
                     pq."facilityId",
                     pq."locationId",
                     pq."packageId",
-                    COALESCE(SUM(pa.delta), 0) AS "quantity",
-                    0 as "reserved"
+                    COALESCE(SUM(
+                        case when o.type = 'Purchase' or o.id is null then
+                            pa.delta
+                        else
+                            0
+                        end
+                    ) + SUM(
+                        case when o.id is not null and o.type = 'Sell' and o.status in ('Complete', 'Refunded') then
+                            pa.delta
+                        else
+                            0
+                        end
+                    ), 0) AS "quantity",
+                    COALESCE(SUM(
+                        case when o.id is not null and o.type = 'Sell' and o.status in ('Temporary', 'Pending', 'InProgress', 'Delivery') then
+                            (pa.delta * -1)
+                        else
+                            0
+                        end
+                    ), 0) AS "reserved"
                 FROM
-                    package_quantity pq
-                LEFT JOIN package_adjustment pa ON
+                    compactbiz.package_quantity pq
+                LEFT JOIN compactbiz.package_adjustment pa ON
                     pa."companyId" = pq."companyId" AND
                     pa."facilityId" = pq."facilityId" AND
                     pa."locationId" = pq."locationId" AND
                     pa."packageId" = pq."packageId"
+                LEFT JOIN compactbiz."order" o on
+                    o."companyId" = pa."companyId" and
+                    o."facilityId" = pa."facilityId" and
+                    o."businessId" = pa."businessId" and
+                    o.id = pa."orderId"
                 WHERE
                     pq."companyId" = company_id AND
                     pq."facilityId" = facility_id AND
@@ -48,7 +71,7 @@ export const updatePackageBalance = `
     LANGUAGE plpgsql
     AS $function$
         BEGIN
-            UPDATE package p SET
+            UPDATE compactbiz.package p SET
                 quantity = x.quantity,
                 reserved = x.reserved
             FROM (
@@ -59,7 +82,7 @@ export const updatePackageBalance = `
                     COALESCE(sum(pq.quantity), 0) AS "quantity",
                     COALESCE(sum(pq.reserved), 0) AS "reserved"
                 FROM
-                    package_quantity pq
+                    compactbiz.package_quantity pq
                 WHERE
                     pq."companyId" = company_id AND
                     pq."facilityId" = facility_id AND

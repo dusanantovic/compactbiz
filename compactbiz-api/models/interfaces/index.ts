@@ -12,6 +12,6 @@ export type { PackageKey } from "../src/package";
 export type { PackageQuantityKey } from "../src/packageQuantity";
 export type { PackageAdjustmentKey } from "../src/packageAdjustment";
 export type { SupplierKey } from "../src/supplier";
-export type { OrderKey } from "../src/order";
+export type { OrderKey, OrderUpdatePayload } from "../src/order";
 export type { OrderDetailKey } from "../src/orderDetail";
 export type { ProductPriceKey } from "../src/productPrice";

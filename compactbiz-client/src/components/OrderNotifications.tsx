@@ -2,10 +2,12 @@ import React, { useCallback, useState } from "react";
 import { Snackbar, Alert } from "@mui/material";
 import { useRefresh } from "react-admin";
 import { useLocation } from "react-router-dom";
-import { useOrderNotifications, OrderNotification } from "../hooks/useOrderNotifications";
+import { useOrderNotifications } from "../hooks/useOrderNotifications";
 import { OrderStatus } from "models/enums";
+import { OrderAction } from "models";
+import { OrderUpdatePayload } from "models/interfaces";
 
-interface ActiveNotification extends OrderNotification {
+interface ActiveNotification extends OrderUpdatePayload {
     id: number;
 }
 
@@ -20,8 +22,10 @@ const statusLabel: Record<OrderStatus, string> = {
     [OrderStatus.Paused]: "paused"
 };
 
-const resolveLabel = (n: OrderNotification): string => {
-    if (n.action === "updated") return "updated";
+const resolveLabel = (n: OrderUpdatePayload): string => {
+    if (n.action === OrderAction.Updated) return "updated";
+    if (n.action === OrderAction.PurchaseCreated) return "purchase created";
+    if (n.action === OrderAction.SellCreated) return "sale created";
     return statusLabel[n.status] ?? n.status;
 };
 
@@ -34,8 +38,8 @@ const statusColor: Partial<Record<OrderStatus, string>> = {
     [OrderStatus.Canceled]: "#d32f2f"
 };
 
-const resolveColor = (n: OrderNotification): string => {
-    if (n.action === "updated") return "#f97316";
+const resolveColor = (n: OrderUpdatePayload): string => {
+    if (n.action === OrderAction.Updated) return "#f97316";
     return statusColor[n.status] ?? "#9e9e9e";
 };
 
@@ -46,7 +50,7 @@ export const OrderNotifications: React.FC = () => {
     const refresh = useRefresh();
     const location = useLocation();
 
-    const handleNotification = useCallback((n: OrderNotification) => {
+    const handleNotification = useCallback((n: OrderUpdatePayload) => {
         const currentUserId = parseInt(localStorage.getItem("userId") || "0");
         if (n.triggeredByUserId === currentUserId) {
             return;

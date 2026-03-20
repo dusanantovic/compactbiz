@@ -111,7 +111,7 @@ const App = () => {
                             options={{
                                 key: 5,
                                 label: "Facilities",
-                                visible: permissions !== null && [Role.Manager, Role.Owner].includes(permissions)
+                                visible: permissions !== null && [Role.Admin, Role.Manager, Role.Owner].includes(permissions)
                             }}
                         />
                         <Resource
@@ -130,7 +130,7 @@ const App = () => {
                             options={{
                                 key: 7,
                                 label: "MyCompany",
-                                visible: permissions !== null && [Role.Manager, Role.Owner].includes(permissions)
+                                visible: permissions !== null && [Role.Admin, Role.Manager, Role.Owner].includes(permissions)
                             }}
                         />
                         {permissions === Role.Admin && (

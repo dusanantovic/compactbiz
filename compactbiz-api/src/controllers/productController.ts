@@ -97,7 +97,7 @@ export class ProductController extends BaseController {
             .where(`pkg."companyId" = :companyId`, { companyId: company.id })
             .andWhere(`pkg."facilityId" = :facilityId`, { facilityId })
             .andWhere(`pkg."productId" = :productId`, { productId: productKey.id })
-            .orderBy(`pa."id"`, "DESC")
+            .orderBy(`pa."id"`, "ASC")
             .getMany();
         response.set("content-range", adjustments.length.toString());
         return adjustments;

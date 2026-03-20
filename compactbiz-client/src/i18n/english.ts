@@ -107,6 +107,7 @@ const customEnglishMessages: TranslationMessages = {
             manager: "Manager",
             owner: "Owner",
             quantity: "Quantity |||| Quantities",
+            reserved: "Reserved |||| Reservations",
             product: "Product |||| Products",
             item: "Item |||| Items",
             detail: "Detail |||| Details",

@@ -46,7 +46,9 @@ useExpressServer(app, {
 });
 
 app.use((req: Request, res: Response) => {
-    res.status(404).json({ message: `Cannot ${req.method} ${req.path}` });
+    if (!res.headersSent) {
+        res.status(404).json({ message: `Cannot ${req.method} ${req.path}` });
+    }
 });
 
 const port = process.env.PORT;

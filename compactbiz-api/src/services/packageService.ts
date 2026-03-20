@@ -1,4 +1,4 @@
-import { EntityManager, In } from "typeorm";
+import { EntityManager, In, MoreThan } from "typeorm";
 import { PackageAdjustmentType } from "../../models/enums";
 import { Package, PackageAdjustment, PackageQuantity } from "../../models";
 import { assert, distinct } from "../../models/src/util";
@@ -66,7 +66,8 @@ export class PackageService {
                     companyId,
                     facilityId,
                     locationId: defaultLocationId,
-                    packageId: In(packagesDb.map(x => x.id))
+                    packageId: In(packagesDb.map(x => x.id)),
+                    quantity: MoreThan(0)
                 }
             });
         }
@@ -143,10 +144,6 @@ export class PackageService {
         await this.packageQuantityRepo.save(newPackageQuantities);
         newPackageAdjustments = await this.packageAdjustmentRepo.save(newPackageAdjustments);
         const savedPackages = [...existingPackages, ...newPackages];
-        savedPackages.forEach(x => {
-            const packageAdjustment = newPackageAdjustments.find(y => y.packageId === x.id && y.locationId === defaultLocationId)!;
-            x.quantity += packageAdjustment.delta;
-        });
         return savedPackages;
     }
 

@@ -16,18 +16,24 @@ export class ProductRepository extends BaseRepository<Product> {
         let qb = this.browseQb(companyId, options);
         qb.addSelect(`(
             SELECT
-                COALESCE(SUM(pa."delta"), 0)
+                COALESCE(SUM(pkg."quantity"), 0)
             FROM
                 compactbiz."package" pkg
-            LEFT JOIN compactbiz."package_adjustment" pa ON
-                pa."companyId" = pkg."companyId" AND
-                pa."facilityId" = pkg."facilityId" AND
-                pa."packageId" = pkg."id"
             WHERE
                 pkg."companyId" = "${qb.alias}"."companyId" AND
                 ${facilityId ? `pkg."facilityId" = ${facilityId} AND` : ""}
                 pkg."productId" = "${qb.alias}"."id"
         ) as "quantity"`);
+         qb.addSelect(`(
+            SELECT
+                COALESCE(SUM(pkg."reserved"), 0)
+            FROM
+                compactbiz."package" pkg
+            WHERE
+                pkg."companyId" = "${qb.alias}"."companyId" AND
+                ${facilityId ? `pkg."facilityId" = ${facilityId} AND` : ""}
+                pkg."productId" = "${qb.alias}"."id"
+        ) as "reserved"`);
         if (options.q) {
             qb = this.search(qb, options.q);
         }
@@ -35,6 +41,7 @@ export class ProductRepository extends BaseRepository<Product> {
         entities.forEach(x => {
             const rData = raw.find(y => y["p_id"] === x.id);
             x.quantity = rData?.quantity ?? 0;
+            x.reserved = rData?.reserved ?? 0;
         });
         const count = await qb.getCount();
         return [entities, count];

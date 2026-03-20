@@ -29,8 +29,8 @@ export class OrderService {
         assert((orderBody.details ?? []).length > 0, ["Missing order items"]);
         const packageService = new PackageService(this.manager);
         const productPriceService = new ProductPriceService(this.manager);
-        const order = Order.create(companyId, facilityId, orderBody.businessId, orderBody.type, orderBody.notes);
-        const savedOrder = await this.orderRepo.save(order);
+        const newOrder = Order.create(companyId, facilityId, orderBody.businessId, orderBody.type, orderBody.notes);
+        let savedOrder = await this.orderRepo.save(newOrder);
         const orderDetails: OrderDetail[] = [];
         orderBody.details!.forEach(od => {
             const orderDetail = OrderDetail.create(companyId, facilityId, savedOrder.businessId, savedOrder.id, od.productId, od.price);
@@ -39,10 +39,12 @@ export class OrderService {
         });
         const defaultLocation = await this.locationRepo.findOneByOrFail({ companyId, facilityId, type: LocationType.Room });
         if (savedOrder.type === OrderType.Purchase) {
-            await packageService.createPurchaseOrder(companyId, facilityId, userId, defaultLocation.id, savedOrder.businessId, savedOrder.id, orderDetails.map(od => ({
+            await packageService.createPurchaseOrder(companyId, facilityId, userId, defaultLocation.id, savedOrder.businessId, savedOrder.id, orderBody.details!.map(od => ({
                 productId: od.productId,
                 quantity: od.quantity
             })));
+            savedOrder.complete(userId);
+            savedOrder = await this.orderRepo.save(savedOrder);
         } else {
             await packageService.createSellOrder(companyId, facilityId, userId, defaultLocation.id, savedOrder.businessId, savedOrder.id, orderDetails.map(od => ({
                 productId: od.productId,
@@ -53,8 +55,8 @@ export class OrderService {
             productId: od.productId,
             price: od.price
         })));
-        order.details = await this.orderDetailRepo.save(orderDetails);
-        return order;
+        savedOrder.details = await this.orderDetailRepo.save(orderDetails);
+        return savedOrder;
     }
 
     public async edit(userId: number, orderKey: OrderKey, orderBody: Partial<Order>): Promise<Order> {
@@ -75,12 +77,12 @@ export class OrderService {
         });
         const defaultLocation = await this.locationRepo.findOneByOrFail({ companyId, facilityId, type: LocationType.Room });
         if (orderDb.type === OrderType.Purchase) {
-            await packageService.createPurchaseOrder(companyId, facilityId, userId, defaultLocation.id, orderDb.businessId, orderDb.id, orderDetails.map(od => ({
+            await packageService.createPurchaseOrder(companyId, facilityId, userId, defaultLocation.id, orderDb.businessId, orderDb.id, orderBody.details!.map(od => ({
                 productId: od.productId,
                 quantity: od.quantity
             })));
         } else {
-            await packageService.createSellOrder(companyId, facilityId, userId, defaultLocation.id, orderDb.businessId, orderDb.id, orderDetails.map(od => ({
+            await packageService.createSellOrder(companyId, facilityId, userId, defaultLocation.id, orderDb.businessId, orderDb.id, orderBody.details!.map(od => ({
                 productId: od.productId,
                 quantity: od.quantity
             })));

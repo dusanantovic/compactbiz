@@ -71,6 +71,7 @@ export class Product extends BaseModel<ProductKey> implements ProductKey {
     prices: ProductPrice[];
 
     quantity: number;
+    reserved: number;
 
     public get identity(): string {
         return this.generateIdentity(this.companyId, this.id);

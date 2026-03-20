@@ -5,6 +5,13 @@ export enum CompanyStatus {
     Demo = "Demo"
 }
 
+export enum OrderAction {
+    PurchaseCreated = "PurchaseCreated",
+    SellCreated = "SellCreated",
+    Updated = "Updated",
+    StatusChanged = "StatusChanged"
+}
+
 export enum Role {
     Guest = 0,
     Warehouseman = 2,

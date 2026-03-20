@@ -107,6 +107,7 @@ const customSerbianMessages: TranslationMessages = {
             manager: "Menadžer",
             owner: "Vlasnik",
             quantity: "Količina |||| Količine",
+            reserved: "Rezervacija |||| Rezervacije",
             product: "Proizvod |||| Proizvodi",
             item: "Stavka |||| Stavke",
             detail: "Detalj |||| Detalji",
